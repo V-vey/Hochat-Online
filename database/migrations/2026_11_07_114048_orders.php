@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->enum('order_type', ['Dine-In', 'Delivery']);
-            $table->enum('status', ['Pending', 'Preparing', 'Ready','Completed', 'Cancelled']);
-            $table->decimal('total_ammount', 8, 2);
-            $table->dateTime('order_date')->default(now());
+            $table->enum('status', ['Pending', 'Preparing', 'Ready','Completed', 'Cancelled'])->default('Pending');
+            $table->decimal('total_amount', 10, 2);
+            $table->dateTime('order_date')->useCurrent();
             $table->dateTime('scheduled_time')->nullable();
-            $table->boolean('is_available')->default(true);
+            $table->timestamps();
         });
     }
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('menu_item_id')->constrained('menu_items');
             $table->integer('quantity')->default(1);
             $table->decimal('sub_total', 8, 2);
+            $table->timestamps();
         });
     }
 

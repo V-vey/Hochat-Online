@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price', 8, 2);
             $table->string('photo_url', 255)->nullable();
             $table->boolean('is_available')->default(true);
+            $table->timestamps();
         });
     }
 

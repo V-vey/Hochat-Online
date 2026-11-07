@@ -10,7 +10,7 @@ class Order extends Model
         'user_id',
         'order_type',
         'status',
-        'total_ammount',
+        'total_amount',
         'order_date',
         'scheduled_time',
         'is_available',
