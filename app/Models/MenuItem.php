@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MenuItem extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'category_id',
         'name',
@@ -13,4 +17,17 @@ class MenuItem extends Model
         'photo_url',
         'is_available',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2', 
+            'is_available' => 'boolean',
+        ];
+    }
 }
