@@ -13,10 +13,12 @@ class OrderItem extends Model
         'quantity',
         'sub_total',
     ];
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
+
     public function menuItem(): BelongsTo
     {
         return $this->belongsTo(MenuItem::class);

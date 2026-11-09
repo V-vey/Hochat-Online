@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\MenuItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +19,7 @@ class MenuItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'category_id' => \App\Models\Category::factory(),
+            'category_id' => Category::factory(),
             'name' => fake()->word(),
             'price' => fake()->randomFloat(2, 50, 300),
             'photo_url' => null,

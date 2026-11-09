@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\MenuItem;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Category;
-use App\Models\MenuItem;
 
 class DatabaseSeeder extends Seeder
 {
@@ -53,6 +53,6 @@ class DatabaseSeeder extends Seeder
 
         $desserts = Category::create(['name' => 'Desserts']);
         MenuItem::factory()->count(5)->create(['category_id' => $desserts->id]);
-        
+
     }
 }

@@ -2,22 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use App\Enums\Role;
 
 /**
  * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
-    
     /**
      * The current password being used by the factory.
-    */
+     */
     protected static ?string $password;
+
     /**
      * Define the model's default state.
      *
@@ -34,7 +34,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'role' => Role::User,
         ];
-            
+
     }
 
     /**
@@ -46,8 +46,8 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-    
-        public function staff(): static
+
+    public function staff(): static
     {
         return $this->state(fn (array $attributes) => [
             'role' => Role::Staff,
