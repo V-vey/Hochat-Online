@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/{menuItem}', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{menuItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 });
 
 Route::middleware(['auth', 'role:Staff,Administrator'])->prefix('admin')->name('admin.')->group(function () {
