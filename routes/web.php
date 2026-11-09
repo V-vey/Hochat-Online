@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -34,5 +35,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:Staff,Administrator'])->prefix('admin')->name('admin.')->group(function () {
     Route::inertia('/dashboard', 'admin/dashboard')->name('dashboard');
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'update'])->name('orders.update');
 });
 
