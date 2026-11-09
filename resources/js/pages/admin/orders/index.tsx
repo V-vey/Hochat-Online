@@ -39,13 +39,13 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
 
     const tabClass = (active: boolean) =>
         active
-            ? 'rounded-full bg-orange-600 px-4 py-1.5 text-sm font-medium text-white'
-            : 'rounded-full bg-white px-4 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-orange-100';
+            ? 'rounded-full bg-brown px-4 py-1.5 text-sm font-medium text-white'
+            : 'rounded-full bg-beige px-4 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-beige';
 
     return (
         <AppLayout>
             <Head title="Manage Orders" />
-            <h1 className="mb-6 text-3xl font-bold">Manage Orders</h1>
+            <h1 className="mb-6 font-display text-4xl">Manage Orders</h1>
 
             <div className="mb-6 flex flex-wrap gap-2">
                 <Link href={index()} className={tabClass(status === null)}>
@@ -63,11 +63,11 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
             )}
 
             {orders.length === 0 ? (
-                <div className="rounded-xl bg-white p-10 text-center text-gray-500 shadow-sm">No orders here.</div>
+                <div className="rounded-xl bg-beige p-10 text-center text-gray-500 shadow-sm">No orders here.</div>
             ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                     {orders.map((order) => (
-                        <div key={order.id} className="flex flex-col rounded-xl bg-white p-5 shadow-sm">
+                        <div key={order.id} className="flex flex-col rounded-xl bg-beige p-5 shadow-sm">
                             <div className="mb-3 flex items-center justify-between">
                                 <h2 className="text-lg font-semibold">Order #{order.id}</h2>
                                 <StatusBadge status={order.status} />
@@ -83,7 +83,7 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
                                 </p>
                                 <p>Ordered {new Date(order.created_at).toLocaleString()}</p>
                                 {order.scheduled_time && (
-                                    <p className="font-medium text-orange-700">
+                                    <p className="font-medium text-gold">
                                         Pre-order for {new Date(order.scheduled_time).toLocaleString()}
                                     </p>
                                 )}
@@ -98,7 +98,7 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
                             </ul>
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
-                                <p className="font-bold text-orange-600">₱{order.total_amount}</p>
+                                <p className="font-bold text-gold">₱{order.total_amount}</p>
 
                                 {nextStatus[order.status] && (
                                     <Link
@@ -106,7 +106,7 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
                                         as="button"
                                         data={{ status: nextStatus[order.status] }}
                                         preserveScroll
-                                        className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+                                        className="rounded-full border border-ink bg-brown font-display px-4 py-2 text-sm font-medium text-white hover:bg-brown-dark"
                                     >
                                         Mark as {nextStatus[order.status]}
                                     </Link>

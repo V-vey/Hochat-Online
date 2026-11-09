@@ -46,13 +46,15 @@ class OrderController extends Controller
         }
 
         $order = DB::transaction(function () use ($request, $quantities, $menuItems) {
-            $total = $menuItems->sum(fn (MenuItem $item) => $item->price * $quantities[$item->id]);
+            $subtotal = $menuItems->sum(fn (MenuItem $item) => $item->price * $quantities[$item->id]);
+            $deliveryFee = Order::deliveryFeeFor($request->input('order_type'));
 
             $order = $request->user()->orders()->create([
                 'order_type' => $request->input('order_type'),
                 'status' => 'Pending',
                 'scheduled_time' => $request->input('scheduled_time'),
-                'total_amount' => $total,
+                'delivery_fee' => $deliveryFee,
+                'total_amount' => $subtotal + $deliveryFee,
             ]);
 
             foreach ($menuItems as $item) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
+use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,6 +32,7 @@ class CartController extends Controller
         return Inertia::render('cart/index', [
             'items' => $items,
             'total' => number_format($items->sum('subtotal'), 2, '.', ''),
+            'deliveryFee' => Order::DELIVERY_FEE,
         ]);
     }
 

@@ -20,7 +20,7 @@ export default function Dashboard({ orderCounts, ordersToday, menuItemCount, sol
     return (
         <AppLayout>
             <Head title="Staff Dashboard" />
-            <h1 className="mb-6 text-3xl font-bold">Staff Dashboard</h1>
+            <h1 className="mb-6 font-display text-4xl">Staff Dashboard</h1>
 
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">Orders to handle</h2>
             <div className="mb-8 grid gap-4 sm:grid-cols-3">
@@ -28,40 +28,40 @@ export default function Dashboard({ orderCounts, ordersToday, menuItemCount, sol
                     <Link
                         key={status}
                         href={ordersIndex({ query: { status } })}
-                        className={`rounded-xl border-l-4 bg-white p-5 shadow-sm hover:ring-2 hover:ring-orange-300 ${color}`}
+                        className={`rounded-xl border-l-4 bg-beige p-5 shadow-sm hover:ring-2 hover:ring-line ${color}`}
                     >
                         <p className="text-sm text-gray-500">{status}</p>
-                        <p className="text-3xl font-bold">{orderCounts[status] ?? 0}</p>
+                        <p className="font-display text-4xl">{orderCounts[status] ?? 0}</p>
                     </Link>
                 ))}
             </div>
 
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">Overview</h2>
             <div className="mb-8 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl bg-white p-5 shadow-sm">
+                <div className="rounded-xl bg-beige p-5 shadow-sm">
                     <p className="text-sm text-gray-500">Orders today</p>
-                    <p className="text-3xl font-bold">{ordersToday}</p>
+                    <p className="font-display text-4xl">{ordersToday}</p>
                 </div>
-                <div className="rounded-xl bg-white p-5 shadow-sm">
+                <div className="rounded-xl bg-beige p-5 shadow-sm">
                     <p className="text-sm text-gray-500">Menu items</p>
-                    <p className="text-3xl font-bold">{menuItemCount}</p>
+                    <p className="font-display text-4xl">{menuItemCount}</p>
                 </div>
-                <div className="rounded-xl bg-white p-5 shadow-sm">
+                <div className="rounded-xl bg-beige p-5 shadow-sm">
                     <p className="text-sm text-gray-500">Sold out</p>
-                    <p className="text-3xl font-bold">{soldOutCount}</p>
+                    <p className="font-display text-4xl">{soldOutCount}</p>
                 </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
                 <Link
                     href={ordersIndex()}
-                    className="rounded-md bg-orange-600 px-5 py-2.5 font-semibold text-white hover:bg-orange-700"
+                    className="rounded-full border border-ink bg-brown font-display px-5 py-2.5 font-semibold text-white hover:bg-brown-dark"
                 >
                     Manage Orders
                 </Link>
                 <Link
                     href={menuIndex()}
-                    className="rounded-md border border-orange-600 px-5 py-2.5 font-semibold text-orange-700 hover:bg-orange-50"
+                    className="rounded-full border border-brown bg-cream font-display px-5 py-2.5 font-semibold text-gold hover:bg-cream"
                 >
                     Manage Menu
                 </Link>

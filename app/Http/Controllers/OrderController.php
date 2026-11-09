@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('orders/index', [
-            'orders' => $request->user()->orders()->latest()->get(),
+            'orders' => $request->user()->orders()->with('orderItems.menuItem')->latest()->get(),
         ]);
     }
 
@@ -67,14 +67,16 @@ class OrderController extends Controller
             return back()->withErrors(['cart' => 'An item in your cart is sold out. Please remove it.']);
         }
 
-        $order = DB::transaction(function () use ($request, $cart, $menuItems) {   // ← changed
-            $total = $menuItems->sum(fn (MenuItem $item) => $item->price * $cart[$item->id]);
+        $order = DB::transaction(function () use ($request, $cart, $menuItems) {
+            $subtotal = $menuItems->sum(fn (MenuItem $item) => $item->price * $cart[$item->id]);
+            $deliveryFee = Order::deliveryFeeFor($request->input('order_type'));
 
             $order = $request->user()->orders()->create([
                 'order_type' => $request->input('order_type'),
                 'status' => 'Pending',
                 'scheduled_time' => $request->input('scheduled_time'),
-                'total_amount' => $total,
+                'delivery_fee' => $deliveryFee,
+                'total_amount' => $subtotal + $deliveryFee,
             ]);
 
             foreach ($menuItems as $item) {
@@ -85,11 +87,11 @@ class OrderController extends Controller
                 ]);
             }
 
-            return $order;   // ← changed
+            return $order;
         });
 
         $request->session()->forget('cart');
 
-        return redirect()->route('orders.show', $order);   // ← changed
+        return redirect()->route('orders.show', $order);
     }
 }

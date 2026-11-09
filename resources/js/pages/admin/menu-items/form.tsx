@@ -19,7 +19,7 @@ type Props = {
 };
 
 const inputClass =
-    'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:outline-none';
+    'w-full rounded-md border border-gold bg-cream px-3 py-2 text-sm focus:border-brown focus:outline-none';
 
 export default function MenuItemForm({ categories, menuItem }: Props) {
     const isEditing = menuItem !== null;
@@ -28,12 +28,12 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
         <AppLayout>
             <Head title={isEditing ? 'Edit Menu Item' : 'Add Menu Item'} />
 
-            <Link href={index()} className="mb-4 inline-block text-sm text-orange-700 hover:underline">
+            <Link href={index()} className="mb-4 inline-block text-sm text-gold hover:underline">
                 ← Back to menu items
             </Link>
 
-            <div className="mx-auto max-w-lg rounded-xl bg-white p-6 shadow-sm">
-                <h1 className="mb-6 text-2xl font-bold capitalize">
+            <div className="mx-auto max-w-lg rounded-xl bg-beige p-6 shadow-sm">
+                <h1 className="mb-6 font-display text-3xl capitalize">
                     {isEditing ? `Edit ${menuItem.name}` : 'Add Menu Item'}
                 </h1>
 
@@ -91,7 +91,7 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                     name="is_available"
                                     value="1"
                                     defaultChecked={menuItem?.is_available ?? true}
-                                    className="h-4 w-4 accent-orange-600"
+                                    className="h-4 w-4 accent-brown"
                                 />
                                 Available (untick to mark as sold out)
                             </label>
@@ -112,7 +112,7 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                     name="photo"
                                     type="file"
                                     accept="image/*"
-                                    className="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-orange-100 file:px-3 file:py-2 file:text-orange-800 hover:file:bg-orange-200"
+                                    className="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-beige file:px-3 file:py-2 file:text-brown hover:file:bg-beige-dark"
                                 />
                                 {errors.photo && <p className="mt-1 text-sm text-red-600">{errors.photo}</p>}
                             </div>
@@ -121,7 +121,7 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="rounded-md bg-orange-600 px-5 py-2.5 font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+                                    className="rounded-full border border-ink bg-brown font-display px-5 py-2.5 font-semibold text-white hover:bg-brown-dark disabled:opacity-50"
                                 >
                                     {isEditing ? 'Save changes' : 'Add item'}
                                 </button>

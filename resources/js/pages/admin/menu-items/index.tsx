@@ -20,10 +20,10 @@ export default function AdminMenuItemsIndex({ menuItems }: { menuItems: MenuItem
             <Head title="Manage Menu" />
 
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold">Manage Menu</h1>
+                <h1 className="font-display text-4xl">Manage Menu</h1>
                 <Link
                     href={create()}
-                    className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+                    className="rounded-full border border-ink bg-brown font-display px-4 py-2 text-sm font-semibold text-white hover:bg-brown-dark"
                 >
                     + Add menu item
                 </Link>
@@ -31,9 +31,9 @@ export default function AdminMenuItemsIndex({ menuItems }: { menuItems: MenuItem
 
             {errors.delete && <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{errors.delete}</p>}
 
-            <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+            <div className="overflow-x-auto rounded-xl bg-beige shadow-sm">
                 <table className="w-full text-left text-sm">
-                    <thead className="bg-orange-100 text-xs uppercase tracking-wide text-orange-900">
+                    <thead className="bg-beige-dark font-display text-xs uppercase tracking-wide text-brown">
                         <tr>
                             <th className="px-4 py-3">Photo</th>
                             <th className="px-4 py-3">Name</th>
@@ -45,7 +45,7 @@ export default function AdminMenuItemsIndex({ menuItems }: { menuItems: MenuItem
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {menuItems.map((item) => (
-                            <tr key={item.id} className="hover:bg-orange-50">
+                            <tr key={item.id} className="hover:bg-cream">
                                 <td className="px-4 py-2">
                                     {item.photo_url ? (
                                         <img
@@ -54,7 +54,7 @@ export default function AdminMenuItemsIndex({ menuItems }: { menuItems: MenuItem
                                             className="h-12 w-12 rounded-md object-cover"
                                         />
                                     ) : (
-                                        <div className="h-12 w-12 rounded-md bg-orange-100" />
+                                        <div className="h-12 w-12 rounded-md bg-beige-dark" />
                                     )}
                                 </td>
                                 <td className="px-4 py-2 font-medium capitalize">{item.name}</td>
@@ -72,7 +72,7 @@ export default function AdminMenuItemsIndex({ menuItems }: { menuItems: MenuItem
                                     )}
                                 </td>
                                 <td className="whitespace-nowrap px-4 py-2 text-right">
-                                    <Link href={edit(item.id)} className="font-medium text-orange-700 hover:underline">
+                                    <Link href={edit(item.id)} className="font-medium text-gold hover:underline">
                                         Edit
                                     </Link>
                                     {isAdmin && (

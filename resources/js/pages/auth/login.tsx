@@ -1,60 +1,68 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { store } from '@/actions/App/Http/Controllers/Auth/LoginController';
 import { create as registerPage } from '@/actions/App/Http/Controllers/Auth/RegisterController';
-import AppLayout from '@/layouts/app-layout';
+import AuthLayout from '@/layouts/auth-layout';
 
 const inputClass =
-    'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none';
+    'w-full rounded-lg border border-ink/70 bg-cream px-4 py-3 font-display shadow-sm placeholder:text-ink/50 focus:border-brown focus:outline-none';
 
 export default function Login() {
     return (
-        <AppLayout>
+        <AuthLayout>
             <Head title="Login" />
 
-            <div className="mx-auto max-w-sm rounded-xl bg-white p-6 shadow-sm">
-                <h1 className="mb-6 text-center text-2xl font-bold">Log in</h1>
-
-                <Form {...store.form()} resetOnSuccess={['password']} className="space-y-4">
-                    {({ errors, processing }) => (
-                        <>
-                            <div>
-                                <label htmlFor="email" className="mb-1 block text-sm font-medium">
-                                    Email
-                                </label>
-                                <input id="email" name="email" type="email" required autoFocus className={inputClass} />
-                                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-                            </div>
-
-                            <div>
-                                <label htmlFor="password" className="mb-1 block text-sm font-medium">
-                                    Password
-                                </label>
-                                <input id="password" name="password" type="password" required className={inputClass} />
-                                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-                            </div>
-
-                            <label className="flex items-center gap-2 text-sm">
-                                <input type="checkbox" name="remember" value="1" /> Remember me
+            <Form {...store.form()} resetOnSuccess={['password']} className="mx-auto max-w-sm space-y-5">
+                {({ errors, processing }) => (
+                    <>
+                        <div>
+                            <label htmlFor="email" className="sr-only">
+                                Email
                             </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                required
+                                autoFocus
+                                className={inputClass}
+                            />
+                            {errors.email && <p className="mt-1 text-sm text-red-700">{errors.email}</p>}
+                        </div>
 
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="w-full rounded-md bg-orange-600 py-2.5 font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
-                            >
+                        <div>
+                            <label htmlFor="password" className="sr-only">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Password"
+                                required
+                                className={inputClass}
+                            />
+                            {errors.password && <p className="mt-1 text-sm text-red-700">{errors.password}</p>}
+                        </div>
+
+                        <label className="flex items-center justify-center gap-2 font-display text-sm">
+                            <input type="checkbox" name="remember" value="1" className="accent-brown" /> Remember me
+                        </label>
+
+                        <div className="text-center">
+                            <button type="submit" disabled={processing} className="btn-pill px-14 py-2.5 text-xl">
                                 Log In
                             </button>
+                        </div>
 
-                            <p className="text-center text-sm text-gray-600">
-                                Don't have an account?{' '}
-                                <Link href={registerPage()} className="font-medium text-orange-700 hover:underline">
-                                    Sign up
-                                </Link>
-                            </p>
-                        </>
-                    )}
-                </Form>
-            </div>
-        </AppLayout>
+                        <p className="text-center">
+                            <Link href={registerPage()} className="font-display font-bold underline">
+                                Sign up
+                            </Link>
+                        </p>
+                    </>
+                )}
+            </Form>
+        </AuthLayout>
     );
 }

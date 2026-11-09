@@ -18,6 +18,7 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'order_type' => $this->order_type,
             'status' => $this->status,
+            'delivery_fee' => (float) $this->delivery_fee,
             'total_amount' => (float) $this->total_amount,
             'scheduled_time' => $this->scheduled_time,
             'created_at' => $this->created_at,

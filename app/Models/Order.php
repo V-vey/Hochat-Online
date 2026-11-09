@@ -11,10 +11,16 @@ class Order extends Model
 {
     use HasFactory;
 
+    /**
+     * Flat fee added to every Delivery order (in pesos).
+     */
+    public const DELIVERY_FEE = 50;
+
     protected $fillable = [
         'user_id',
         'order_type',
         'status',
+        'delivery_fee',
         'total_amount',
         'order_date',
         'scheduled_time',
@@ -28,6 +34,7 @@ class Order extends Model
     protected function casts(): array
     {
         return [
+            'delivery_fee' => 'decimal:2',
             'total_amount' => 'decimal:2',
             'order_date' => 'datetime',
             'scheduled_time' => 'datetime',
@@ -37,5 +44,13 @@ class Order extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * The delivery fee for the given order type: ₱50 for Delivery, free for Dine-In.
+     */
+    public static function deliveryFeeFor(string $orderType): int
+    {
+        return $orderType === 'Delivery' ? self::DELIVERY_FEE : 0;
     }
 }

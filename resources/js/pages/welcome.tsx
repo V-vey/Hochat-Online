@@ -1,74 +1,106 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { dashboard } from '@/routes/admin';
-import { create as loginPage } from '@/actions/App/Http/Controllers/Auth/LoginController';
-import { create as registerPage } from '@/actions/App/Http/Controllers/Auth/RegisterController';
+import { Head, Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/MenuController';
 import AppLayout from '@/layouts/app-layout';
 
-export default function Welcome() {
-    const { auth } = usePage().props;
-    const isStaff = auth.user?.role === 'Staff' || auth.user?.role === 'Administrator';
+type FeaturedItem = {
+    id: number;
+    name: string;
+    price: string;
+    photo_url: string | null;
+    category: { name: string };
+};
+
+export default function Welcome({ featured }: { featured: FeaturedItem[] }) {
+    const [slide, setSlide] = useState(0);
+    const current = featured[slide];
+
+    useEffect(() => {
+        if (featured.length < 2) {
+            return;
+        }
+
+        const timer = setInterval(() => setSlide((s) => (s + 1) % featured.length), 5000);
+
+        return () => clearInterval(timer);
+    }, [featured.length]);
+
+    const go = (step: number) => setSlide((s) => (s + step + featured.length) % featured.length);
 
     return (
         <AppLayout>
-            <Head title="Welcome" />
+            <Head title="Home" />
 
-            <section className="rounded-2xl bg-white px-6 py-16 text-center shadow-sm">
-                <h1 className="mb-4 text-4xl font-bold sm:text-5xl">
-                    Hungry? <span className="text-orange-600">Order from Hochat.</span>
-                </h1>
-                <p className="mx-auto mb-8 max-w-xl text-gray-600">
-                    Browse our menu, add your favorites to the cart, and choose dine-in or delivery. Pay cash on
-                    delivery or at pickup.
-                </p>
-
-                {auth.user ? (
-                    <div className="flex flex-wrap justify-center gap-3">
-                        <p className="w-full text-sm text-gray-500">Welcome back, {auth.user.name}!</p>
-                        <Link
-                            href={menuIndex()}
-                            className="rounded-md bg-orange-600 px-6 py-3 font-semibold text-white hover:bg-orange-700"
-                        >
-                            See the menu
+            <section className="grid items-center gap-10 py-6 md:grid-cols-2">
+                <div className="text-center">
+                    <h1 className="mb-4 text-4xl font-bold sm:text-5xl">It’s all about taste.</h1>
+                    <p className="mb-8 text-2xl">
+                        Fresh Ingredients,
+                        <br />
+                        Unforgettable Flavors.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <Link href={menuIndex()} className="btn-pill px-6 py-3 text-lg">
+                            Discover the Menu
                         </Link>
-                        {isStaff && (
-                            <Link
-                                href={dashboard()}
-                                className="rounded-md border border-orange-600 px-6 py-3 font-semibold text-orange-700 hover:bg-orange-50"
-                            >
-                                Staff Dashboard
-                            </Link>
+                        <Link href={menuIndex()} className="btn-pill px-6 py-3 text-lg">
+                            Order Now
+                        </Link>
+                    </div>
+                </div>
+
+                {current && (
+                    <div>
+                        <div className="relative h-72 overflow-hidden rounded-2xl bg-beige shadow-lg">
+                            {current.photo_url ? (
+                                <img src={current.photo_url} alt={current.name} className="h-full w-full object-cover" />
+                            ) : (
+                                <div className="flex h-full items-center justify-center font-display text-gold">
+                                    {current.category.name}
+                                </div>
+                            )}
+                            <span className="absolute top-3 right-3 rounded-full bg-brown px-3 py-1 font-display text-xs text-white">
+                                Featured
+                            </span>
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-center text-white">
+                                <p className="font-display text-xl capitalize">{current.name}</p>
+                                <p className="text-sm">
+                                    {current.category.name} · ₱{current.price}
+                                </p>
+                            </div>
+                        </div>
+
+                        {featured.length > 1 && (
+                            <div className="mt-4 flex items-center justify-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => go(-1)}
+                                    aria-label="Previous"
+                                    className="h-8 w-8 rounded-full bg-brown text-white hover:bg-brown-dark"
+                                >
+                                    ‹
+                                </button>
+                                {featured.map((item, i) => (
+                                    <button
+                                        key={item.id}
+                                        type="button"
+                                        onClick={() => setSlide(i)}
+                                        aria-label={`Show ${item.name}`}
+                                        className={`h-2.5 w-2.5 rounded-full border border-brown ${i === slide ? 'bg-brown' : 'bg-transparent'}`}
+                                    />
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => go(1)}
+                                    aria-label="Next"
+                                    className="h-8 w-8 rounded-full bg-brown text-white hover:bg-brown-dark"
+                                >
+                                    ›
+                                </button>
+                            </div>
                         )}
                     </div>
-                ) : (
-                    <div className="flex flex-wrap justify-center gap-3">
-                        <Link
-                            href={registerPage()}
-                            className="rounded-md bg-orange-600 px-6 py-3 font-semibold text-white hover:bg-orange-700"
-                        >
-                            Create an account
-                        </Link>
-                        <Link
-                            href={loginPage()}
-                            className="rounded-md border border-orange-600 px-6 py-3 font-semibold text-orange-700 hover:bg-orange-50"
-                        >
-                            Log in
-                        </Link>
-                    </div>
                 )}
-            </section>
-
-            <section className="mt-8 grid gap-4 sm:grid-cols-3">
-                {[
-                    ['Browse the menu', 'Rice meals, wings, pasta, drinks and desserts, all in one place.'],
-                    ['Dine-in or delivery', 'Eat here or have it brought to your door. Pre-order for later too.'],
-                    ['Pay on delivery', 'No card needed. Pay cash on delivery or when you pick up.'],
-                ].map(([title, text]) => (
-                    <div key={title} className="rounded-xl bg-white p-5 shadow-sm">
-                        <h2 className="mb-1 font-semibold text-orange-700">{title}</h2>
-                        <p className="text-sm text-gray-600">{text}</p>
-                    </div>
-                ))}
             </section>
         </AppLayout>
     );

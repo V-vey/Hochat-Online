@@ -1,98 +1,114 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { create as loginPage } from '@/actions/App/Http/Controllers/Auth/LoginController';
 import { store } from '@/actions/App/Http/Controllers/Auth/RegisterController';
-import AppLayout from '@/layouts/app-layout';
+import AuthLayout from '@/layouts/auth-layout';
 
 const inputClass =
-    'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none';
+    'w-full rounded-lg border border-ink/70 bg-cream px-4 py-3 font-display shadow-sm placeholder:text-ink/50 focus:border-brown focus:outline-none';
 
 export default function Register() {
     return (
-        <AppLayout>
+        <AuthLayout>
             <Head title="Sign up" />
 
-            <div className="mx-auto max-w-md rounded-xl bg-white p-6 shadow-sm">
-                <h1 className="mb-6 text-center text-2xl font-bold">Create an account</h1>
+            <Form
+                {...store.form()}
+                resetOnSuccess={['password', 'password_confirmation']}
+                className="mx-auto max-w-md space-y-4"
+            >
+                {({ errors, processing }) => (
+                    <>
+                        <div>
+                            <label htmlFor="name" className="sr-only">
+                                Full name
+                            </label>
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                placeholder="Full name"
+                                required
+                                autoFocus
+                                className={inputClass}
+                            />
+                            {errors.name && <p className="mt-1 text-sm text-red-700">{errors.name}</p>}
+                        </div>
 
-                <Form
-                    {...store.form()}
-                    resetOnSuccess={['password', 'password_confirmation']}
-                    className="space-y-4"
-                >
-                    {({ errors, processing }) => (
-                        <>
+                        <div>
+                            <label htmlFor="email" className="sr-only">
+                                Email
+                            </label>
+                            <input id="email" name="email" type="email" placeholder="Email" required className={inputClass} />
+                            {errors.email && <p className="mt-1 text-sm text-red-700">{errors.email}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="phone" className="sr-only">
+                                Phone
+                            </label>
+                            <input id="phone" name="phone" type="tel" placeholder="Phone" required className={inputClass} />
+                            {errors.phone && <p className="mt-1 text-sm text-red-700">{errors.phone}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="address" className="sr-only">
+                                Address
+                            </label>
+                            <input
+                                id="address"
+                                name="address"
+                                type="text"
+                                placeholder="Address (needed for delivery)"
+                                className={inputClass}
+                            />
+                            {errors.address && <p className="mt-1 text-sm text-red-700">{errors.address}</p>}
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="name" className="mb-1 block text-sm font-medium">
-                                    Full name
+                                <label htmlFor="password" className="sr-only">
+                                    Password
                                 </label>
-                                <input id="name" name="name" type="text" required autoFocus className={inputClass} />
-                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                    required
+                                    className={inputClass}
+                                />
                             </div>
-
                             <div>
-                                <label htmlFor="email" className="mb-1 block text-sm font-medium">
-                                    Email
+                                <label htmlFor="password_confirmation" className="sr-only">
+                                    Confirm password
                                 </label>
-                                <input id="email" name="email" type="email" required className={inputClass} />
-                                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                                <input
+                                    id="password_confirmation"
+                                    name="password_confirmation"
+                                    type="password"
+                                    placeholder="Confirm password"
+                                    required
+                                    className={inputClass}
+                                />
                             </div>
+                        </div>
+                        {errors.password && <p className="text-sm text-red-700">{errors.password}</p>}
 
-                            <div>
-                                <label htmlFor="phone" className="mb-1 block text-sm font-medium">
-                                    Phone
-                                </label>
-                                <input id="phone" name="phone" type="tel" required className={inputClass} />
-                                {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-                            </div>
-
-                            <div>
-                                <label htmlFor="address" className="mb-1 block text-sm font-medium">
-                                    Address <span className="font-normal text-gray-500">(needed for delivery)</span>
-                                </label>
-                                <input id="address" name="address" type="text" className={inputClass} />
-                                {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div>
-                                    <label htmlFor="password" className="mb-1 block text-sm font-medium">
-                                        Password
-                                    </label>
-                                    <input id="password" name="password" type="password" required className={inputClass} />
-                                </div>
-                                <div>
-                                    <label htmlFor="password_confirmation" className="mb-1 block text-sm font-medium">
-                                        Confirm password
-                                    </label>
-                                    <input
-                                        id="password_confirmation"
-                                        name="password_confirmation"
-                                        type="password"
-                                        required
-                                        className={inputClass}
-                                    />
-                                </div>
-                            </div>
-                            {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
-
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="w-full rounded-md bg-orange-600 py-2.5 font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
-                            >
+                        <div className="text-center">
+                            <button type="submit" disabled={processing} className="btn-pill px-14 py-2.5 text-xl">
                                 Sign up
                             </button>
+                        </div>
 
-                            <p className="text-center text-sm text-gray-600">
-                                Already have an account?{' '}
-                                <Link href={loginPage()} className="font-medium text-orange-700 hover:underline">
-                                    Log in
-                                </Link>
-                            </p>
-                        </>
-                    )}
-                </Form>
-            </div>
-        </AppLayout>
+                        <p className="text-center font-display text-sm">
+                            Already have an account?{' '}
+                            <Link href={loginPage()} className="font-bold underline">
+                                Log in
+                            </Link>
+                        </p>
+                    </>
+                )}
+            </Form>
+        </AuthLayout>
     );
 }

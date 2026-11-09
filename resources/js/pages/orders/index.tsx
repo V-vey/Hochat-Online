@@ -1,56 +1,44 @@
 import { Head, Link } from '@inertiajs/react';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/MenuController';
 import { show } from '@/actions/App/Http/Controllers/OrderController';
-import StatusBadge from '@/components/status-badge';
+import type { OrderDetails } from '@/components/order-card';
+import OrderCard from '@/components/order-card';
+import PageHeader from '@/components/page-header';
 import AppLayout from '@/layouts/app-layout';
+import { home } from '@/routes';
 
-type Order = {
-    id: number;
-    order_type: string;
-    status: string;
-    total_amount: string;
-    created_at: string;
-};
-
-export default function OrdersIndex({ orders }: { orders: Order[] }) {
+export default function OrdersIndex({ orders }: { orders: OrderDetails[] }) {
     return (
         <AppLayout>
-            <Head title="My Orders" />
-            <h1 className="mb-6 text-3xl font-bold">My Orders</h1>
+            <Head title="Transactions" />
+            <PageHeader title="Transactions" backHref={home()} />
 
-            {orders.length === 0 ? (
-                <div className="rounded-xl bg-white p-10 text-center shadow-sm">
-                    <p className="mb-4 text-gray-500">You have no orders yet.</p>
-                    <Link
-                        href={menuIndex()}
-                        className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
-                    >
-                        Order something
-                    </Link>
-                </div>
-            ) : (
-                <div className="space-y-3">
-                    {orders.map((order) => (
-                        <Link
-                            key={order.id}
-                            href={show(order.id)}
-                            className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-white p-4 shadow-sm hover:ring-2 hover:ring-orange-300"
-                        >
-                            <div>
-                                <p className="font-semibold">Order #{order.id}</p>
-                                <p className="text-sm text-gray-500">
-                                    {new Date(order.created_at).toLocaleString()} · {order.order_type}
-                                </p>
-                            </div>
+            <div className="mx-auto max-w-3xl rounded-2xl bg-beige p-5 shadow-md">
+                <h2 className="mb-4 border-b border-line pb-3 text-center font-display text-2xl text-gold">
+                    Past Orders
+                </h2>
 
-                            <div className="flex items-center gap-4">
-                                <StatusBadge status={order.status} />
-                                <p className="w-24 text-right font-semibold text-orange-600">₱{order.total_amount}</p>
-                            </div>
+                {orders.length === 0 ? (
+                    <div className="py-8 text-center">
+                        <p className="mb-6 font-display text-gold">You have no orders yet.</p>
+                        <Link href={menuIndex()} className="btn-pill">
+                            Order something
                         </Link>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {orders.map((order) => (
+                            <OrderCard key={order.id} order={order}>
+                                <div className="mt-3 text-right">
+                                    <Link href={show(order.id)} className="btn-pill-light px-4 py-1 text-sm">
+                                        View receipt
+                                    </Link>
+                                </div>
+                            </OrderCard>
+                        ))}
+                    </div>
+                )}
+            </div>
         </AppLayout>
     );
 }

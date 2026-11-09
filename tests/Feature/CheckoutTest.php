@@ -51,6 +51,35 @@ test('checking out creates the order and empties the cart', function () {
         ->and($order->orderItems)->toHaveCount(2);
 });
 
+test('delivery orders add a 50 peso delivery fee', function () {
+    $user = User::factory()->create(['address' => 'Tarlac City']);
+    $item = MenuItem::factory()->create(['price' => 125]);
+
+    $this->actingAs($user)
+        ->withSession(['cart' => [$item->id => 1]])
+        ->post(route('orders.store'), ['order_type' => 'Delivery'])
+        ->assertRedirect();
+
+    $order = $user->orders()->first();
+
+    expect($order->delivery_fee)->toBe('50.00')
+        ->and($order->total_amount)->toBe('175.00');
+});
+
+test('dine-in orders have no delivery fee', function () {
+    $user = User::factory()->create();
+    $item = MenuItem::factory()->create(['price' => 125]);
+
+    $this->actingAs($user)
+        ->withSession(['cart' => [$item->id => 1]])
+        ->post(route('orders.store'), ['order_type' => 'Dine-In']);
+
+    $order = $user->orders()->first();
+
+    expect($order->delivery_fee)->toBe('0.00')
+        ->and($order->total_amount)->toBe('125.00');
+});
+
 test('checkout fails when the cart is empty', function () {
     $this->actingAs(User::factory()->create())
         ->post(route('orders.store'), ['order_type' => 'Dine-In'])

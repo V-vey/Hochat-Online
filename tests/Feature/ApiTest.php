@@ -55,6 +55,21 @@ test('a customer can place an order through the api', function () {
         ->assertJsonCount(1, 'data.items');
 });
 
+test('api delivery orders include the delivery fee', function () {
+    Sanctum::actingAs(User::factory()->create(['address' => 'Tarlac City']));
+    $item = MenuItem::factory()->create(['price' => 100]);
+
+    $this->postJson(route('api.v1.orders.store'), [
+        'order_type' => 'Delivery',
+        'items' => [
+            ['menu_item_id' => $item->id, 'quantity' => 1],
+        ],
+    ])
+        ->assertCreated()
+        ->assertJsonPath('data.delivery_fee', 50)
+        ->assertJsonPath('data.total_amount', 150);
+});
+
 test('customers cannot use the staff api', function () {
     $order = Order::factory()->create();
     Sanctum::actingAs($order->user);
