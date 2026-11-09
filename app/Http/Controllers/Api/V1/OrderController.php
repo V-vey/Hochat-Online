@@ -50,6 +50,7 @@ class OrderController extends Controller
 
             $order = $request->user()->orders()->create([
                 'order_type' => $request->input('order_type'),
+                'status' => 'Pending',
                 'scheduled_time' => $request->input('scheduled_time'),
                 'total_amount' => $total,
             ]);
