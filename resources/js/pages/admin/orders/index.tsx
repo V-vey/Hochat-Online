@@ -1,5 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { index, update } from '@/actions/App/Http/Controllers/Admin/OrderController';
+import StatusBadge from '@/components/status-badge';
+import AppLayout from '@/layouts/app-layout';
 
 type OrderItem = {
     id: number;
@@ -35,62 +37,85 @@ const statuses = ['Pending', 'Preparing', 'Ready', 'Completed', 'Cancelled'];
 export default function AdminOrdersIndex({ orders, counts, status }: Props) {
     const { errors } = usePage().props;
 
-    return (
-        <>
-            <Head title="Manage Orders" />
-            <h1>Manage Orders</h1>
+    const tabClass = (active: boolean) =>
+        active
+            ? 'rounded-full bg-orange-600 px-4 py-1.5 text-sm font-medium text-white'
+            : 'rounded-full bg-white px-4 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-orange-100';
 
-            <div>
-                <Link href={index()}>All</Link>
+    return (
+        <AppLayout>
+            <Head title="Manage Orders" />
+            <h1 className="mb-6 text-3xl font-bold">Manage Orders</h1>
+
+            <div className="mb-6 flex flex-wrap gap-2">
+                <Link href={index()} className={tabClass(status === null)}>
+                    All
+                </Link>
                 {statuses.map((s) => (
-                    <Link key={s} href={index({ query: { status: s } })}>
-                        {' '}| {s} ({counts[s] ?? 0})
+                    <Link key={s} href={index({ query: { status: s } })} className={tabClass(status === s)}>
+                        {s} ({counts[s] ?? 0})
                     </Link>
                 ))}
             </div>
-            <p>Showing: {status ?? 'All'}</p>
 
-            {errors.status && <p>{errors.status}</p>}
+            {errors.status && (
+                <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{errors.status}</p>
+            )}
 
             {orders.length === 0 ? (
-                <p>No orders.</p>
+                <div className="rounded-xl bg-white p-10 text-center text-gray-500 shadow-sm">No orders here.</div>
             ) : (
-                orders.map((order) => (
-                    <div key={order.id}>
-                        <h3>
-                            Order #{order.id} — {order.status}
-                        </h3>
-                        <p>
-                            {order.user.name} ({order.user.phone}) — {order.order_type}
-                            {order.order_type === 'Delivery' && ` — ${order.user.address}`}
-                        </p>
-                        <p>Ordered: {new Date(order.created_at).toLocaleString()}</p>
-                        {order.scheduled_time && (
-                            <p>Pre-order for: {new Date(order.scheduled_time).toLocaleString()}</p>
-                        )}
-                        <ul>
-                            {order.order_items.map((item) => (
-                                <li key={item.id}>
-                                    {item.quantity} × {item.menu_item.name}
-                                </li>
-                            ))}
-                        </ul>
-                        <p>Total: ₱{order.total_amount}</p>
+                <div className="grid gap-4 md:grid-cols-2">
+                    {orders.map((order) => (
+                        <div key={order.id} className="flex flex-col rounded-xl bg-white p-5 shadow-sm">
+                            <div className="mb-3 flex items-center justify-between">
+                                <h2 className="text-lg font-semibold">Order #{order.id}</h2>
+                                <StatusBadge status={order.status} />
+                            </div>
 
-                        {nextStatus[order.status] && (
-                            <Link
-                                href={update(order.id)}
-                                as="button"
-                                data={{ status: nextStatus[order.status] }}
-                                preserveScroll
-                            >
-                                Mark as {nextStatus[order.status]}
-                            </Link>
-                        )}
-                        <hr />
-                    </div>
-                ))
+                            <div className="mb-3 text-sm text-gray-600">
+                                <p className="font-medium text-gray-800">
+                                    {order.user.name} · {order.user.phone}
+                                </p>
+                                <p>
+                                    {order.order_type}
+                                    {order.order_type === 'Delivery' && ` to ${order.user.address}`}
+                                </p>
+                                <p>Ordered {new Date(order.created_at).toLocaleString()}</p>
+                                {order.scheduled_time && (
+                                    <p className="font-medium text-orange-700">
+                                        Pre-order for {new Date(order.scheduled_time).toLocaleString()}
+                                    </p>
+                                )}
+                            </div>
+
+                            <ul className="mb-3 border-t border-dashed pt-3 text-sm">
+                                {order.order_items.map((item) => (
+                                    <li key={item.id} className="capitalize">
+                                        {item.quantity} × {item.menu_item.name}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <div className="mt-auto flex items-center justify-between border-t pt-3">
+                                <p className="font-bold text-orange-600">₱{order.total_amount}</p>
+
+                                {nextStatus[order.status] && (
+                                    <Link
+                                        href={update(order.id)}
+                                        as="button"
+                                        data={{ status: nextStatus[order.status] }}
+                                        preserveScroll
+                                        className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+                                    >
+                                        Mark as {nextStatus[order.status]}
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
-        </>
+        </AppLayout>
     );
 }

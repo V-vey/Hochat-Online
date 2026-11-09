@@ -1,5 +1,6 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { index, store, update } from '@/actions/App/Http/Controllers/Admin/MenuItemController';
+import AppLayout from '@/layouts/app-layout';
 
 type Category = { id: number; name: string };
 
@@ -17,70 +18,121 @@ type Props = {
     menuItem: MenuItem | null;
 };
 
+const inputClass =
+    'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:outline-none';
+
 export default function MenuItemForm({ categories, menuItem }: Props) {
     const isEditing = menuItem !== null;
 
     return (
-        <>
+        <AppLayout>
             <Head title={isEditing ? 'Edit Menu Item' : 'Add Menu Item'} />
-            <h1>{isEditing ? `Edit ${menuItem.name}` : 'Add Menu Item'}</h1>
 
-            <Form {...(isEditing ? update.form(menuItem.id) : store.form())}>
-                {({ errors, processing }) => (
-                    <>
-                        <div>
-                            <label htmlFor="category_id">Category</label>
-                            <select id="category_id" name="category_id" defaultValue={menuItem?.category_id ?? ''}>
-                                <option value="" disabled>
-                                    Choose a category
-                                </option>
-                                {categories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
+            <Link href={index()} className="mb-4 inline-block text-sm text-orange-700 hover:underline">
+                ← Back to menu items
+            </Link>
+
+            <div className="mx-auto max-w-lg rounded-xl bg-white p-6 shadow-sm">
+                <h1 className="mb-6 text-2xl font-bold capitalize">
+                    {isEditing ? `Edit ${menuItem.name}` : 'Add Menu Item'}
+                </h1>
+
+                <Form {...(isEditing ? update.form(menuItem.id) : store.form())} className="space-y-4">
+                    {({ errors, processing }) => (
+                        <>
+                            <div>
+                                <label htmlFor="category_id" className="mb-1 block text-sm font-medium">
+                                    Category
+                                </label>
+                                <select
+                                    id="category_id"
+                                    name="category_id"
+                                    defaultValue={menuItem?.category_id ?? ''}
+                                    className={inputClass}
+                                >
+                                    <option value="" disabled>
+                                        Choose a category
                                     </option>
-                                ))}
-                            </select>
-                            {errors.category_id && <p>{errors.category_id}</p>}
-                        </div>
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.category_id && <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>}
+                            </div>
 
-                        <div>
-                            <label htmlFor="name">Name</label>
-                            <input id="name" name="name" defaultValue={menuItem?.name ?? ''} />
-                            {errors.name && <p>{errors.name}</p>}
-                        </div>
+                            <div>
+                                <label htmlFor="name" className="mb-1 block text-sm font-medium">
+                                    Name
+                                </label>
+                                <input id="name" name="name" defaultValue={menuItem?.name ?? ''} className={inputClass} />
+                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                            </div>
 
-                        <div>
-                            <label htmlFor="price">Price (₱)</label>
-                            <input id="price" name="price" type="number" step="0.01" defaultValue={menuItem?.price ?? ''} />
-                            {errors.price && <p>{errors.price}</p>}
-                        </div>
+                            <div>
+                                <label htmlFor="price" className="mb-1 block text-sm font-medium">
+                                    Price (₱)
+                                </label>
+                                <input
+                                    id="price"
+                                    name="price"
+                                    type="number"
+                                    step="0.01"
+                                    defaultValue={menuItem?.price ?? ''}
+                                    className={inputClass}
+                                />
+                                {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
+                            </div>
 
-                        <div>
-                            <label>
+                            <label className="flex items-center gap-2 text-sm font-medium">
                                 <input
                                     type="checkbox"
                                     name="is_available"
                                     value="1"
                                     defaultChecked={menuItem?.is_available ?? true}
-                                />{' '}
-                                Available
+                                    className="h-4 w-4 accent-orange-600"
+                                />
+                                Available (untick to mark as sold out)
                             </label>
-                        </div>
 
-                        <div>
-                            <label htmlFor="photo">Photo</label>
-                            {menuItem?.photo_url && <img src={menuItem.photo_url} alt={menuItem.name} width={100} />}
-                            <input id="photo" name="photo" type="file" accept="image/*" />
-                            {errors.photo && <p>{errors.photo}</p>}
-                        </div>
+                            <div>
+                                <label htmlFor="photo" className="mb-1 block text-sm font-medium">
+                                    Photo
+                                </label>
+                                {menuItem?.photo_url && (
+                                    <img
+                                        src={menuItem.photo_url}
+                                        alt={menuItem.name}
+                                        className="mb-2 h-24 w-24 rounded-md object-cover"
+                                    />
+                                )}
+                                <input
+                                    id="photo"
+                                    name="photo"
+                                    type="file"
+                                    accept="image/*"
+                                    className="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-orange-100 file:px-3 file:py-2 file:text-orange-800 hover:file:bg-orange-200"
+                                />
+                                {errors.photo && <p className="mt-1 text-sm text-red-600">{errors.photo}</p>}
+                            </div>
 
-                        <button type="submit" disabled={processing}>
-                            {isEditing ? 'Save changes' : 'Add item'}
-                        </button>
-                        <Link href={index()}> Cancel</Link>
-                    </>
-                )}
-            </Form>
-        </>
+                            <div className="flex items-center gap-3 pt-2">
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="rounded-md bg-orange-600 px-5 py-2.5 font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+                                >
+                                    {isEditing ? 'Save changes' : 'Add item'}
+                                </button>
+                                <Link href={index()} className="text-sm text-gray-600 hover:underline">
+                                    Cancel
+                                </Link>
+                            </div>
+                        </>
+                    )}
+                </Form>
+            </div>
+        </AppLayout>
     );
 }

@@ -6,6 +6,23 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
+
+test('the staff dashboard shows order and menu counts', function () {
+    Order::factory()->count(2)->create();
+    Order::factory()->create(['status' => 'Preparing']);
+    MenuItem::factory()->create(['is_available' => false]);
+
+    $this->actingAs(User::factory()->staff()->create())
+        ->get(route('admin.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/dashboard')
+            ->where('orderCounts.Pending', 2)
+            ->where('orderCounts.Preparing', 1)
+            ->where('ordersToday', 3)
+            ->where('soldOutCount', 1)
+        );
+});
 
 test('staff can move an order to the next status', function () {
     $order = Order::factory()->create();
