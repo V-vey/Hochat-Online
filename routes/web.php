@@ -8,6 +8,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\MenuItemController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -37,5 +38,9 @@ Route::middleware(['auth', 'role:Staff,Administrator'])->prefix('admin')->name('
     Route::inertia('/dashboard', 'admin/dashboard')->name('dashboard');
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::resource('menu-items', MenuItemController::class)->except(['show', 'destroy']);
 });
 
+Route::middleware(['auth', 'role:Administrator'])->prefix('admin')->name('admin.')->group(function () {
+    Route::delete('/menu-items/{menu_item}', [MenuItemController::class, 'destroy'])->name('menu-items.destroy');
+});
