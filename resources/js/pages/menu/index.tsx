@@ -1,4 +1,5 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { store as addToCart } from '@/actions/App/Http/Controllers/CartController';
 
 type MenuItem = {
     id: number;
@@ -19,7 +20,6 @@ export default function MenuIndex({ categories }: { categories: Category[] }) {
         <>
             <Head title="Menu" />
             <h1>Menu</h1>
-
             {categories.map((category) => (
                 <section key={category.id}>
                     <h2>{category.name}</h2>
@@ -27,11 +27,22 @@ export default function MenuIndex({ categories }: { categories: Category[] }) {
                     {category.menu_items.map((item) => (
                         <div key={item.id}>
                             <p>{item.name} — ₱{item.price}</p>
-                            {!item.is_available && <span>Sold out</span>}
+
+                            {item.is_available ? (
+                            <Link href={addToCart(item.id)} as="button" preserveScroll>
+                                Add to cart
+                            </Link>
+                            ) : (
+                                <span>Sold out</span>
+                            )}
+                            
                         </div>
+                        
                     ))}
+                    
                 </section>
             ))}
+            
         </>
     );
 }
