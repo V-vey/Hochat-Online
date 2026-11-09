@@ -113,7 +113,7 @@ export default function Dashboard({
                 {statusCards.map(({ status, color }) => (
                     <Link
                         key={status}
-                        href={ordersIndex({ query: { status } })}
+                        href={ordersIndex({ query: { status, from, to } })}
                         className={`rounded-xl border-l-4 bg-beige p-4 shadow-sm hover:ring-2 hover:ring-line ${color}`}
                     >
                         <p className="text-sm">{status}</p>
@@ -142,7 +142,17 @@ export default function Dashboard({
                 </div>
             </div>
 
-            <h2 className="mb-3 font-display text-lg">Orders in this period</h2>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="font-display text-lg">Orders in this period</h2>
+                {totalOrders > orders.length && (
+                    <p className="text-sm">
+                        Showing the latest {orders.length} of {totalOrders} orders.{' '}
+                        <Link href={ordersIndex({ query: { from, to } })} className="font-display text-gold underline">
+                            See all in Manage Orders
+                        </Link>
+                    </p>
+                )}
+            </div>
             <div className="mb-8 overflow-x-auto rounded-2xl bg-beige shadow-md">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-beige-dark font-display text-xs tracking-wide text-brown uppercase">

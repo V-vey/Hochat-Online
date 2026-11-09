@@ -24,6 +24,8 @@ type Props = {
     orders: Order[];
     counts: Record<string, number>;
     status: string | null;
+    from: string | null;
+    to: string | null;
 };
 
 const nextStatus: Record<string, string> = {
@@ -34,8 +36,13 @@ const nextStatus: Record<string, string> = {
 
 const statuses = ['Pending', 'Preparing', 'Ready', 'Completed', 'Cancelled'];
 
-export default function AdminOrdersIndex({ orders, counts, status }: Props) {
+export default function AdminOrdersIndex({ orders, counts, status, from, to }: Props) {
     const { errors } = usePage().props;
+
+    /** Keep the date range (if any) when switching status tabs. */
+    const dates = { ...(from ? { from } : {}), ...(to ? { to } : {}) };
+    const hasDates = from !== null || to !== null;
+    const period = from === to ? from : `${from ?? 'the start'} to ${to ?? 'today'}`;
 
     const tabClass = (active: boolean) =>
         active
@@ -47,12 +54,21 @@ export default function AdminOrdersIndex({ orders, counts, status }: Props) {
             <Head title="Manage Orders" />
             <h1 className="mb-6 font-display text-4xl">Manage Orders</h1>
 
+            {hasDates && (
+                <p className="mb-4 flex flex-wrap items-center gap-3 rounded-xl bg-beige px-4 py-3 font-display text-sm">
+                    Showing orders placed {from === to ? 'on' : 'from'} {period}
+                    <Link href={index({ query: status ? { status } : {} })} className="btn-pill-light px-3 py-1 text-xs">
+                        Show all dates
+                    </Link>
+                </p>
+            )}
+
             <div className="mb-6 flex flex-wrap gap-2">
-                <Link href={index()} className={tabClass(status === null)}>
+                <Link href={index({ query: dates })} className={tabClass(status === null)}>
                     All
                 </Link>
                 {statuses.map((s) => (
-                    <Link key={s} href={index({ query: { status: s } })} className={tabClass(status === s)}>
+                    <Link key={s} href={index({ query: { ...dates, status: s } })} className={tabClass(status === s)}>
                         {s} ({counts[s] ?? 0})
                     </Link>
                 ))}

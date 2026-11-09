@@ -3,25 +3,39 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ManageOrdersRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Models\Order;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class OrderController extends Controller
 {
-    public function index(Request $request): Response
+    /**
+     * List orders, optionally filtered by status and by a date range.
+     */
+    public function index(ManageOrdersRequest $request): Response
     {
-        $status = $request->query('status');
+        $status = $request->validated('status');
+        $from = $request->validated('from');
+        $to = $request->validated('to');
+
+        $inDateRange = fn (Builder $query) => $query
+            ->when($from, fn (Builder $q) => $q->where('created_at', '>=', Carbon::parse($from)->startOfDay()))
+            ->when($to, fn (Builder $q) => $q->where('created_at', '<=', Carbon::parse($to)->endOfDay()));
 
         $orders = Order::with(['user', 'orderItems.menuItem'])
-            ->when($status, fn ($query) => $query->where('status', $status))
+            ->tap($inDateRange)
+            ->when($status, fn (Builder $query) => $query->where('status', $status))
             ->latest()
             ->get();
 
-        $counts = Order::selectRaw('status, count(*) as total')
+        $counts = Order::query()
+            ->tap($inDateRange)
+            ->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
@@ -29,6 +43,8 @@ class OrderController extends Controller
             'orders' => $orders,
             'counts' => $counts,
             'status' => $status,
+            'from' => $from,
+            'to' => $to,
         ]);
     }
 

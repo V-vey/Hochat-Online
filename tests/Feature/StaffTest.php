@@ -52,6 +52,37 @@ test('the order status report rejects an end date before the start date', functi
         ->assertSessionHasErrors('to');
 });
 
+test('the order status report only lists the latest 50 orders but counts them all', function () {
+    Order::factory()->count(52)->create();
+
+    $this->actingAs(User::factory()->staff()->create())
+        ->get(route('admin.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('totalOrders', 52)
+            ->has('orders', 50)
+        );
+});
+
+test('manage orders can be filtered by status and date range', function () {
+    Order::factory()->create(['created_at' => now()->subDays(10)]);
+    Order::factory()->create(['created_at' => now()->subDays(1)]);
+    Order::factory()->create(['status' => 'Completed']);
+
+    $this->actingAs(User::factory()->staff()->create())
+        ->get(route('admin.orders.index', [
+            'status' => 'Pending',
+            'from' => now()->subDays(3)->toDateString(),
+            'to' => now()->toDateString(),
+        ]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/orders/index')
+            ->has('orders', 1)
+            ->where('counts.Pending', 1)
+            ->where('counts.Completed', 1)
+            ->where('from', now()->subDays(3)->toDateString())
+        );
+});
+
 test('customers cannot see the order status report', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('admin.dashboard'))
