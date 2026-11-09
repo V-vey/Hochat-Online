@@ -18,7 +18,9 @@ export default function OrdersShow({ order, canCancel }: Props) {
 
             <div className="mx-auto max-w-2xl rounded-2xl bg-beige p-5 shadow-md">
                 <OrderCard order={order}>
-                    <p className="mt-3 text-sm">Payment: Cash on Delivery / Pay at Counter</p>
+                    <p className="mt-3 text-sm">
+                        Payment: Cash on Delivery / Pay at Counter
+                    </p>
 
                     {canCancel && (
                         <div className="mt-5 text-center">
@@ -30,7 +32,10 @@ export default function OrdersShow({ order, canCancel }: Props) {
                             >
                                 Cancel order
                             </Link>
-                            <p className="mt-2 text-xs">You can cancel within 1 minute while the order is Pending.</p>
+                            <p className="mt-2 text-xs">
+                                You can cancel within 1 minute while the order
+                                is Pending.
+                            </p>
                         </div>
                     )}
                 </OrderCard>

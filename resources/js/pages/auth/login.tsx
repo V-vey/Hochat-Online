@@ -11,7 +11,11 @@ export default function Login() {
         <AuthLayout>
             <Head title="Login" />
 
-            <Form {...store.form()} resetOnSuccess={['password']} className="mx-auto max-w-sm space-y-5">
+            <Form
+                {...store.form()}
+                resetOnSuccess={['password']}
+                className="mx-auto max-w-sm space-y-5"
+            >
                 {({ errors, processing }) => (
                     <>
                         <div>
@@ -27,7 +31,11 @@ export default function Login() {
                                 autoFocus
                                 className={inputClass}
                             />
-                            {errors.email && <p className="mt-1 text-sm text-red-700">{errors.email}</p>}
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.email}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -42,21 +50,38 @@ export default function Login() {
                                 required
                                 className={inputClass}
                             />
-                            {errors.password && <p className="mt-1 text-sm text-red-700">{errors.password}</p>}
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.password}
+                                </p>
+                            )}
                         </div>
 
                         <label className="flex items-center justify-center gap-2 font-display text-sm">
-                            <input type="checkbox" name="remember" value="1" className="accent-brown" /> Remember me
+                            <input
+                                type="checkbox"
+                                name="remember"
+                                value="1"
+                                className="accent-brown"
+                            />{' '}
+                            Remember me
                         </label>
 
                         <div className="text-center">
-                            <button type="submit" disabled={processing} className="btn-pill px-14 py-2.5 text-xl">
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="btn-pill px-14 py-2.5 text-xl"
+                            >
                                 Log In
                             </button>
                         </div>
 
                         <p className="text-center">
-                            <Link href={registerPage()} className="font-display font-bold underline">
+                            <Link
+                                href={registerPage()}
+                                className="font-display font-bold underline"
+                            >
                                 Sign up
                             </Link>
                         </p>

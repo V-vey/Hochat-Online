@@ -31,23 +31,49 @@ export default function Register() {
                                 autoFocus
                                 className={inputClass}
                             />
-                            {errors.name && <p className="mt-1 text-sm text-red-700">{errors.name}</p>}
+                            {errors.name && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.name}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <label htmlFor="email" className="sr-only">
                                 Email
                             </label>
-                            <input id="email" name="email" type="email" placeholder="Email" required className={inputClass} />
-                            {errors.email && <p className="mt-1 text-sm text-red-700">{errors.email}</p>}
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                required
+                                className={inputClass}
+                            />
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.email}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <label htmlFor="phone" className="sr-only">
                                 Phone
                             </label>
-                            <input id="phone" name="phone" type="tel" placeholder="Phone" required className={inputClass} />
-                            {errors.phone && <p className="mt-1 text-sm text-red-700">{errors.phone}</p>}
+                            <input
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                placeholder="Phone"
+                                required
+                                className={inputClass}
+                            />
+                            {errors.phone && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.phone}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -61,7 +87,11 @@ export default function Register() {
                                 placeholder="Address (needed for delivery)"
                                 className={inputClass}
                             />
-                            {errors.address && <p className="mt-1 text-sm text-red-700">{errors.address}</p>}
+                            {errors.address && (
+                                <p className="mt-1 text-sm text-red-700">
+                                    {errors.address}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -79,7 +109,10 @@ export default function Register() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="password_confirmation" className="sr-only">
+                                <label
+                                    htmlFor="password_confirmation"
+                                    className="sr-only"
+                                >
                                     Confirm password
                                 </label>
                                 <input
@@ -92,17 +125,28 @@ export default function Register() {
                                 />
                             </div>
                         </div>
-                        {errors.password && <p className="text-sm text-red-700">{errors.password}</p>}
+                        {errors.password && (
+                            <p className="text-sm text-red-700">
+                                {errors.password}
+                            </p>
+                        )}
 
                         <div className="text-center">
-                            <button type="submit" disabled={processing} className="btn-pill px-14 py-2.5 text-xl">
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="btn-pill px-14 py-2.5 text-xl"
+                            >
                                 Sign up
                             </button>
                         </div>
 
                         <p className="text-center font-display text-sm">
                             Already have an account?{' '}
-                            <Link href={loginPage()} className="font-bold underline">
+                            <Link
+                                href={loginPage()}
+                                className="font-bold underline"
+                            >
                                 Log in
                             </Link>
                         </p>

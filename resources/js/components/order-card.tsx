@@ -22,8 +22,16 @@ export type OrderDetails = {
 /**
  * One order with its items and totals, styled like the "Past Orders" card in the mockup (Figure 7).
  */
-export default function OrderCard({ order, children }: { order: OrderDetails; children?: ReactNode }) {
-    const subtotal = (Number(order.total_amount) - Number(order.delivery_fee)).toFixed(2);
+export default function OrderCard({
+    order,
+    children,
+}: {
+    order: OrderDetails;
+    children?: ReactNode;
+}) {
+    const subtotal = (
+        Number(order.total_amount) - Number(order.delivery_fee)
+    ).toFixed(2);
 
     return (
         <div className="rounded-xl border-l-4 border-gold bg-cream p-5 font-display shadow-sm">
@@ -33,17 +41,25 @@ export default function OrderCard({ order, children }: { order: OrderDetails; ch
             </div>
 
             <p className="mt-2 text-xs">
-                {new Date(order.created_at).toLocaleString()} · {order.order_type}
+                {new Date(order.created_at).toLocaleString()} ·{' '}
+                {order.order_type}
             </p>
             {order.scheduled_time && (
-                <p className="text-xs text-gold">Pre-order for {new Date(order.scheduled_time).toLocaleString()}</p>
+                <p className="text-xs text-gold">
+                    Pre-order for{' '}
+                    {new Date(order.scheduled_time).toLocaleString()}
+                </p>
             )}
 
             <div className="mt-2">
                 {order.order_items.map((line) => (
-                    <div key={line.id} className="flex justify-between border-b border-dotted border-line py-1.5 text-sm">
+                    <div
+                        key={line.id}
+                        className="flex justify-between border-b border-dotted border-line py-1.5 text-sm"
+                    >
                         <span className="capitalize">
-                            <span className="text-gold">{line.quantity}×</span> {line.menu_item.name}
+                            <span className="text-gold">{line.quantity}×</span>{' '}
+                            {line.menu_item.name}
                         </span>
                         <span>₱ {line.sub_total}</span>
                     </div>

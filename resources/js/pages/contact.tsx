@@ -25,15 +25,21 @@ export default function Contact() {
 
                 <dl className="space-y-3">
                     {details.map(({ label, value }) => (
-                        <div key={label} className="rounded-xl bg-cream p-4 shadow-sm">
-                            <dt className="font-display text-sm text-gold">{label}</dt>
+                        <div
+                            key={label}
+                            className="rounded-xl bg-cream p-4 shadow-sm"
+                        >
+                            <dt className="font-display text-sm text-gold">
+                                {label}
+                            </dt>
                             <dd>{value}</dd>
                         </div>
                     ))}
                 </dl>
 
                 <p className="mt-6 text-center text-sm">
-                    You can also message us on Facebook or Instagram using the links below.
+                    You can also message us on Facebook or Instagram using the
+                    links below.
                 </p>
             </div>
         </AppLayout>

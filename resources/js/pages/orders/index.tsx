@@ -20,7 +20,9 @@ export default function OrdersIndex({ orders }: { orders: OrderDetails[] }) {
 
                 {orders.length === 0 ? (
                     <div className="py-8 text-center">
-                        <p className="mb-6 font-display text-gold">You have no orders yet.</p>
+                        <p className="mb-6 font-display text-gold">
+                            You have no orders yet.
+                        </p>
                         <Link href={menuIndex()} className="btn-pill">
                             Order something
                         </Link>
@@ -30,7 +32,10 @@ export default function OrdersIndex({ orders }: { orders: OrderDetails[] }) {
                         {orders.map((order) => (
                             <OrderCard key={order.id} order={order}>
                                 <div className="mt-3 text-right">
-                                    <Link href={show(order.id)} className="btn-pill-light px-4 py-1 text-sm">
+                                    <Link
+                                        href={show(order.id)}
+                                        className="btn-pill-light px-4 py-1 text-sm"
+                                    >
                                         View receipt
                                     </Link>
                                 </div>

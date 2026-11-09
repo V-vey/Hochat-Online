@@ -10,12 +10,19 @@ type Props = {
 /**
  * Centered page title with an optional brown "Back" pill on the right, like the mockups.
  */
-export default function PageHeader({ title, backHref, backLabel = 'Back' }: Props) {
+export default function PageHeader({
+    title,
+    backHref,
+    backLabel = 'Back',
+}: Props) {
     return (
         <div className="relative mb-8 flex flex-wrap items-center justify-center gap-4">
             <h1 className="font-display text-4xl drop-shadow-sm">{title}</h1>
             {backHref && (
-                <Link href={backHref} className="btn-pill sm:absolute sm:right-0">
+                <Link
+                    href={backHref}
+                    className="btn-pill sm:absolute sm:right-0"
+                >
                     {backLabel}
                 </Link>
             )}

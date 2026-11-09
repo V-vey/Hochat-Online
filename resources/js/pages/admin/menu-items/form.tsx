@@ -1,5 +1,9 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, store, update } from '@/actions/App/Http/Controllers/Admin/MenuItemController';
+import {
+    index,
+    store,
+    update,
+} from '@/actions/App/Http/Controllers/Admin/MenuItemController';
 import AppLayout from '@/layouts/app-layout';
 
 type Category = { id: number; name: string };
@@ -28,7 +32,10 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
         <AppLayout>
             <Head title={isEditing ? 'Edit Menu Item' : 'Add Menu Item'} />
 
-            <Link href={index()} className="mb-4 inline-block text-sm text-gold hover:underline">
+            <Link
+                href={index()}
+                className="mb-4 inline-block text-sm text-gold hover:underline"
+            >
                 ← Back to menu items
             </Link>
 
@@ -37,11 +44,17 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                     {isEditing ? `Edit ${menuItem.name}` : 'Add Menu Item'}
                 </h1>
 
-                <Form {...(isEditing ? update.form(menuItem.id) : store.form())} className="space-y-4">
+                <Form
+                    {...(isEditing ? update.form(menuItem.id) : store.form())}
+                    className="space-y-4"
+                >
                     {({ errors, processing }) => (
                         <>
                             <div>
-                                <label htmlFor="category_id" className="mb-1 block text-sm font-medium">
+                                <label
+                                    htmlFor="category_id"
+                                    className="mb-1 block text-sm font-medium"
+                                >
                                     Category
                                 </label>
                                 <select
@@ -54,24 +67,46 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                         Choose a category
                                     </option>
                                     {categories.map((category) => (
-                                        <option key={category.id} value={category.id}>
+                                        <option
+                                            key={category.id}
+                                            value={category.id}
+                                        >
                                             {category.name}
                                         </option>
                                     ))}
                                 </select>
-                                {errors.category_id && <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>}
+                                {errors.category_id && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.category_id}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label htmlFor="name" className="mb-1 block text-sm font-medium">
+                                <label
+                                    htmlFor="name"
+                                    className="mb-1 block text-sm font-medium"
+                                >
                                     Name
                                 </label>
-                                <input id="name" name="name" defaultValue={menuItem?.name ?? ''} className={inputClass} />
-                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                <input
+                                    id="name"
+                                    name="name"
+                                    defaultValue={menuItem?.name ?? ''}
+                                    className={inputClass}
+                                />
+                                {errors.name && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label htmlFor="price" className="mb-1 block text-sm font-medium">
+                                <label
+                                    htmlFor="price"
+                                    className="mb-1 block text-sm font-medium"
+                                >
                                     Price (₱)
                                 </label>
                                 <input
@@ -82,7 +117,11 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                     defaultValue={menuItem?.price ?? ''}
                                     className={inputClass}
                                 />
-                                {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
+                                {errors.price && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.price}
+                                    </p>
+                                )}
                             </div>
 
                             <label className="flex items-center gap-2 text-sm font-medium">
@@ -90,14 +129,19 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                     type="checkbox"
                                     name="is_available"
                                     value="1"
-                                    defaultChecked={menuItem?.is_available ?? true}
+                                    defaultChecked={
+                                        menuItem?.is_available ?? true
+                                    }
                                     className="h-4 w-4 accent-brown"
                                 />
                                 Available (untick to mark as sold out)
                             </label>
 
                             <div>
-                                <label htmlFor="photo" className="mb-1 block text-sm font-medium">
+                                <label
+                                    htmlFor="photo"
+                                    className="mb-1 block text-sm font-medium"
+                                >
                                     Photo
                                 </label>
                                 {menuItem?.photo_url && (
@@ -114,18 +158,25 @@ export default function MenuItemForm({ categories, menuItem }: Props) {
                                     accept="image/*"
                                     className="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-beige file:px-3 file:py-2 file:text-brown hover:file:bg-beige-dark"
                                 />
-                                {errors.photo && <p className="mt-1 text-sm text-red-600">{errors.photo}</p>}
+                                {errors.photo && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.photo}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="flex items-center gap-3 pt-2">
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="rounded-full border border-ink bg-brown font-display px-5 py-2.5 font-semibold text-white hover:bg-brown-dark disabled:opacity-50"
+                                    className="rounded-full border border-ink bg-brown px-5 py-2.5 font-display font-semibold text-white hover:bg-brown-dark disabled:opacity-50"
                                 >
                                     {isEditing ? 'Save changes' : 'Add item'}
                                 </button>
-                                <Link href={index()} className="text-sm text-gray-600 hover:underline">
+                                <Link
+                                    href={index()}
+                                    className="text-sm text-gray-600 hover:underline"
+                                >
                                     Cancel
                                 </Link>
                             </div>

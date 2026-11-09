@@ -41,8 +41,22 @@ const ymd = (date: Date) =>
 const today = new Date();
 const quickRanges = [
     { label: 'Today', from: ymd(today), to: ymd(today) },
-    { label: 'Last 7 days', from: ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)), to: ymd(today) },
-    { label: 'This month', from: ymd(new Date(today.getFullYear(), today.getMonth(), 1)), to: ymd(today) },
+    {
+        label: 'Last 7 days',
+        from: ymd(
+            new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate() - 6,
+            ),
+        ),
+        to: ymd(today),
+    },
+    {
+        label: 'This month',
+        from: ymd(new Date(today.getFullYear(), today.getMonth(), 1)),
+        to: ymd(today),
+    },
 ];
 
 const dateInput =
@@ -67,24 +81,48 @@ export default function Dashboard({
             <PageHeader title="Order Status Report" />
 
             <div className="mb-8 rounded-2xl bg-beige p-5 shadow-md print:hidden">
-                <Form {...dashboard.form()} className="flex flex-wrap items-end justify-center gap-3">
+                <Form
+                    {...dashboard.form()}
+                    className="flex flex-wrap items-end justify-center gap-3"
+                >
                     {() => (
                         <>
                             <label className="font-display text-sm">
                                 From
-                                <input type="date" name="from" defaultValue={from} className={`${dateInput} ml-2`} />
+                                <input
+                                    type="date"
+                                    name="from"
+                                    defaultValue={from}
+                                    className={`${dateInput} ml-2`}
+                                />
                             </label>
                             <label className="font-display text-sm">
                                 To
-                                <input type="date" name="to" defaultValue={to} className={`${dateInput} ml-2`} />
+                                <input
+                                    type="date"
+                                    name="to"
+                                    defaultValue={to}
+                                    className={`${dateInput} ml-2`}
+                                />
                             </label>
-                            <button type="submit" className="btn-pill px-5 py-2 text-sm">
+                            <button
+                                type="submit"
+                                className="btn-pill px-5 py-2 text-sm"
+                            >
                                 Show report
                             </button>
-                            <button type="button" onClick={() => window.print()} className="btn-pill-light px-5 py-2 text-sm">
+                            <button
+                                type="button"
+                                onClick={() => window.print()}
+                                className="btn-pill-light px-5 py-2 text-sm"
+                            >
                                 Print
                             </button>
-                            {errors.to && <p className="w-full text-center text-sm text-red-700">{errors.to}</p>}
+                            {errors.to && (
+                                <p className="w-full text-center text-sm text-red-700">
+                                    {errors.to}
+                                </p>
+                            )}
                         </>
                     )}
                 </Form>
@@ -93,7 +131,9 @@ export default function Dashboard({
                     {quickRanges.map((range) => (
                         <Link
                             key={range.label}
-                            href={dashboard({ query: { from: range.from, to: range.to } })}
+                            href={dashboard({
+                                query: { from: range.from, to: range.to },
+                            })}
                             className={
                                 range.from === from && range.to === to
                                     ? 'rounded-full border border-ink bg-brown px-4 py-1 font-display text-xs text-white'
@@ -106,7 +146,9 @@ export default function Dashboard({
                 </div>
             </div>
 
-            <p className="mb-3 text-center font-display text-gold">Report period: {period}</p>
+            <p className="mb-3 text-center font-display text-gold">
+                Report period: {period}
+            </p>
 
             <h2 className="mb-3 font-display text-lg">Orders by status</h2>
             <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -117,7 +159,9 @@ export default function Dashboard({
                         className={`rounded-xl border-l-4 bg-beige p-4 shadow-sm hover:ring-2 hover:ring-line ${color}`}
                     >
                         <p className="text-sm">{status}</p>
-                        <p className="font-display text-4xl">{statusCounts[status] ?? 0}</p>
+                        <p className="font-display text-4xl">
+                            {statusCounts[status] ?? 0}
+                        </p>
                     </Link>
                 ))}
             </div>
@@ -146,8 +190,12 @@ export default function Dashboard({
                 <h2 className="font-display text-lg">Orders in this period</h2>
                 {totalOrders > orders.length && (
                     <p className="text-sm">
-                        Showing the latest {orders.length} of {totalOrders} orders.{' '}
-                        <Link href={ordersIndex({ query: { from, to } })} className="font-display text-gold underline">
+                        Showing the latest {orders.length} of {totalOrders}{' '}
+                        orders.{' '}
+                        <Link
+                            href={ordersIndex({ query: { from, to } })}
+                            className="font-display text-gold underline"
+                        >
                             See all in Manage Orders
                         </Link>
                     </p>
@@ -168,22 +216,35 @@ export default function Dashboard({
                     <tbody className="divide-y divide-line/40">
                         {orders.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-4 py-8 text-center font-display text-gold">
+                                <td
+                                    colSpan={6}
+                                    className="px-4 py-8 text-center font-display text-gold"
+                                >
                                     No orders in this period.
                                 </td>
                             </tr>
                         ) : (
                             orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-cream">
-                                    <td className="px-4 py-2 font-display">#HOCHAT-{order.id}</td>
-                                    <td className="px-4 py-2">{order.user.name}</td>
-                                    <td className="px-4 py-2">{order.order_type}</td>
+                                    <td className="px-4 py-2 font-display">
+                                        #HOCHAT-{order.id}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {order.user.name}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {order.order_type}
+                                    </td>
                                     <td className="px-4 py-2">
                                         <StatusBadge status={order.status} />
                                     </td>
-                                    <td className="px-4 py-2 text-right">₱ {order.total_amount}</td>
+                                    <td className="px-4 py-2 text-right">
+                                        ₱ {order.total_amount}
+                                    </td>
                                     <td className="px-4 py-2 whitespace-nowrap">
-                                        {new Date(order.created_at).toLocaleString()}
+                                        {new Date(
+                                            order.created_at,
+                                        ).toLocaleString()}
                                     </td>
                                 </tr>
                             ))

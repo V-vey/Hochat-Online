@@ -20,12 +20,16 @@ export default function Welcome({ featured }: { featured: FeaturedItem[] }) {
             return;
         }
 
-        const timer = setInterval(() => setSlide((s) => (s + 1) % featured.length), 5000);
+        const timer = setInterval(
+            () => setSlide((s) => (s + 1) % featured.length),
+            5000,
+        );
 
         return () => clearInterval(timer);
     }, [featured.length]);
 
-    const go = (step: number) => setSlide((s) => (s + step + featured.length) % featured.length);
+    const go = (step: number) =>
+        setSlide((s) => (s + step + featured.length) % featured.length);
 
     return (
         <AppLayout>
@@ -33,17 +37,25 @@ export default function Welcome({ featured }: { featured: FeaturedItem[] }) {
 
             <section className="grid items-center gap-10 py-6 md:grid-cols-2">
                 <div className="text-center">
-                    <h1 className="mb-4 text-4xl font-bold sm:text-5xl">It’s all about taste.</h1>
+                    <h1 className="mb-4 text-4xl font-bold sm:text-5xl">
+                        It’s all about taste.
+                    </h1>
                     <p className="mb-8 text-2xl">
                         Fresh Ingredients,
                         <br />
                         Unforgettable Flavors.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Link href={menuIndex()} className="btn-pill px-6 py-3 text-lg">
+                        <Link
+                            href={menuIndex()}
+                            className="btn-pill px-6 py-3 text-lg"
+                        >
                             Discover the Menu
                         </Link>
-                        <Link href={menuIndex()} className="btn-pill px-6 py-3 text-lg">
+                        <Link
+                            href={menuIndex()}
+                            className="btn-pill px-6 py-3 text-lg"
+                        >
                             Order Now
                         </Link>
                     </div>
@@ -53,7 +65,11 @@ export default function Welcome({ featured }: { featured: FeaturedItem[] }) {
                     <div>
                         <div className="relative h-72 overflow-hidden rounded-2xl bg-beige shadow-lg">
                             {current.photo_url ? (
-                                <img src={current.photo_url} alt={current.name} className="h-full w-full object-cover" />
+                                <img
+                                    src={current.photo_url}
+                                    alt={current.name}
+                                    className="h-full w-full object-cover"
+                                />
                             ) : (
                                 <div className="flex h-full items-center justify-center font-display text-gold">
                                     {current.category.name}
@@ -63,7 +79,9 @@ export default function Welcome({ featured }: { featured: FeaturedItem[] }) {
                                 Featured
                             </span>
                             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-center text-white">
-                                <p className="font-display text-xl capitalize">{current.name}</p>
+                                <p className="font-display text-xl capitalize">
+                                    {current.name}
+                                </p>
                                 <p className="text-sm">
                                     {current.category.name} · ₱{current.price}
                                 </p>

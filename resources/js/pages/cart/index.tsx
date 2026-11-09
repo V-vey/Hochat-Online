@@ -31,11 +31,17 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
     return (
         <AppLayout>
             <Head title="My Cart" />
-            <PageHeader title="My Cart" backHref={menuIndex()} backLabel="Back to Menu" />
+            <PageHeader
+                title="My Cart"
+                backHref={menuIndex()}
+                backLabel="Back to Menu"
+            />
 
             {items.length === 0 ? (
                 <div className="mx-auto max-w-xl rounded-2xl bg-beige p-10 text-center shadow-md">
-                    <p className="mb-6 font-display text-gold">Your cart is empty.</p>
+                    <p className="mb-6 font-display text-gold">
+                        Your cart is empty.
+                    </p>
                     <Link href={menuIndex()} className="btn-pill">
                         Browse the menu
                     </Link>
@@ -54,14 +60,20 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                     className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-cream p-4 shadow-sm"
                                 >
                                     <div className="min-w-32">
-                                        <p className="font-display text-gold capitalize">{item.name}</p>
-                                        <p className="text-sm">₱ {item.price} each</p>
+                                        <p className="font-display text-gold capitalize">
+                                            {item.name}
+                                        </p>
+                                        <p className="text-sm">
+                                            ₱ {item.price} each
+                                        </p>
                                     </div>
 
                                     <div className="flex items-center gap-3">
                                         <Link
                                             href={update(item.id)}
-                                            data={{ quantity: item.quantity - 1 }}
+                                            data={{
+                                                quantity: item.quantity - 1,
+                                            }}
                                             as="button"
                                             disabled={item.quantity === 1}
                                             preserveScroll
@@ -70,10 +82,14 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                         >
                                             −
                                         </Link>
-                                        <span className="w-5 text-center font-display">{item.quantity}</span>
+                                        <span className="w-5 text-center font-display">
+                                            {item.quantity}
+                                        </span>
                                         <Link
                                             href={update(item.id)}
-                                            data={{ quantity: item.quantity + 1 }}
+                                            data={{
+                                                quantity: item.quantity + 1,
+                                            }}
                                             as="button"
                                             preserveScroll
                                             aria-label="Increase"
@@ -84,7 +100,9 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                     </div>
 
                                     <div className="flex items-center gap-4">
-                                        <p className="w-24 text-right font-display text-gold">₱ {item.subtotal}</p>
+                                        <p className="w-24 text-right font-display text-gold">
+                                            ₱ {item.subtotal}
+                                        </p>
                                         <Link
                                             href={destroy(item.id)}
                                             as="button"
@@ -109,32 +127,48 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                             {({ errors, processing }) => (
                                 <>
                                     <div>
-                                        <p className="mb-2 font-display text-sm">Order type</p>
+                                        <p className="mb-2 font-display text-sm">
+                                            Order type
+                                        </p>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {['Dine-In', 'Delivery'].map((type) => (
-                                                <label
-                                                    key={type}
-                                                    className="cursor-pointer rounded-full border border-gold bg-cream py-2 text-center font-display text-sm text-gold has-[:checked]:border-ink has-[:checked]:bg-brown has-[:checked]:text-white"
-                                                >
-                                                    <input
-                                                        type="radio"
-                                                        name="order_type"
-                                                        value={type}
-                                                        checked={orderType === type}
-                                                        onChange={() => setOrderType(type)}
-                                                        className="sr-only"
-                                                    />
-                                                    {type}
-                                                </label>
-                                            ))}
+                                            {['Dine-In', 'Delivery'].map(
+                                                (type) => (
+                                                    <label
+                                                        key={type}
+                                                        className="cursor-pointer rounded-full border border-gold bg-cream py-2 text-center font-display text-sm text-gold has-[:checked]:border-ink has-[:checked]:bg-brown has-[:checked]:text-white"
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            name="order_type"
+                                                            value={type}
+                                                            checked={
+                                                                orderType ===
+                                                                type
+                                                            }
+                                                            onChange={() =>
+                                                                setOrderType(
+                                                                    type,
+                                                                )
+                                                            }
+                                                            className="sr-only"
+                                                        />
+                                                        {type}
+                                                    </label>
+                                                ),
+                                            )}
                                         </div>
                                         {errors.order_type && (
-                                            <p className="mt-1 text-sm text-red-700">{errors.order_type}</p>
+                                            <p className="mt-1 text-sm text-red-700">
+                                                {errors.order_type}
+                                            </p>
                                         )}
                                     </div>
 
                                     <div>
-                                        <label htmlFor="scheduled_time" className="mb-2 block font-display text-sm">
+                                        <label
+                                            htmlFor="scheduled_time"
+                                            className="mb-2 block font-display text-sm"
+                                        >
                                             Pre-order for later (optional)
                                         </label>
                                         <input
@@ -144,22 +178,31 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                             className="w-full rounded-lg border border-gold bg-cream px-3 py-2 text-sm focus:border-brown focus:outline-none"
                                         />
                                         {errors.scheduled_time && (
-                                            <p className="mt-1 text-sm text-red-700">{errors.scheduled_time}</p>
+                                            <p className="mt-1 text-sm text-red-700">
+                                                {errors.scheduled_time}
+                                            </p>
                                         )}
                                     </div>
 
                                     <div className="font-display text-sm">
                                         <div className="flex justify-between border-b border-line py-2">
                                             <span>Subtotal:</span>
-                                            <span className="font-bold">₱ {total}</span>
+                                            <span className="font-bold">
+                                                ₱ {total}
+                                            </span>
                                         </div>
                                         <div className="flex justify-between border-b border-line py-2">
                                             <span>Delivery Fee:</span>
-                                            <span className="font-bold">₱ {fee.toFixed(2)}</span>
+                                            <span className="font-bold">
+                                                ₱ {fee.toFixed(2)}
+                                            </span>
                                         </div>
                                         <div className="flex justify-between py-2">
                                             <span>Payment:</span>
-                                            <span>Cash on Delivery / Pay at Counter</span>
+                                            <span>
+                                                Cash on Delivery / Pay at
+                                                Counter
+                                            </span>
                                         </div>
                                     </div>
 
@@ -167,12 +210,25 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                         Total: ₱ {grandTotal}
                                     </p>
 
-                                    {errors.cart && <p className="text-sm text-red-700">{errors.cart}</p>}
+                                    {errors.cart && (
+                                        <p className="text-sm text-red-700">
+                                            {errors.cart}
+                                        </p>
+                                    )}
 
-                                    <button type="submit" disabled={processing} className="btn-pill w-full py-3 text-lg">
-                                        {processing ? 'Placing order...' : 'Proceed to Checkout'}
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="btn-pill w-full py-3 text-lg"
+                                    >
+                                        {processing
+                                            ? 'Placing order...'
+                                            : 'Proceed to Checkout'}
                                     </button>
-                                    <Link href={menuIndex()} className="btn-pill-light w-full py-2.5 text-sm">
+                                    <Link
+                                        href={menuIndex()}
+                                        className="btn-pill-light w-full py-2.5 text-sm"
+                                    >
                                         Continue Shopping
                                     </Link>
                                 </>
