@@ -26,6 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{menuItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 Route::middleware(['auth', 'role:Staff,Administrator'])->prefix('admin')->name('admin.')->group(function () {

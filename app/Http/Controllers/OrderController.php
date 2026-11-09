@@ -6,12 +6,49 @@ use App\Http\Requests\PlaceOrderRequest;
 use App\Models\MenuItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use App\Models\Order;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class OrderController extends Controller
 {
     /**
-     * Turn the cart into an order.
+     * List the customer's own orders, newest first.
      */
+    public function index(Request $request): Response
+    {
+        return Inertia::render('orders/index', [
+            'orders' => $request->user()->orders()->latest()->get(),
+        ]);
+    }
+
+    /**
+     * Show one order as a receipt.
+     */
+    public function show(Request $request, Order $order): Response
+    {
+        Gate::authorize('view', $order);
+
+        return Inertia::render('orders/show', [
+            'order' => $order->load('orderItems.menuItem'),
+            'canCancel' => $request->user()->can('cancel', $order),
+        ]);
+    }
+
+    /**
+     * Cancel the order if the 1-minute window is still open.
+     */
+    public function cancel(Order $order): RedirectResponse
+    {
+        Gate::authorize('cancel', $order);
+
+        $order->update(['status' => 'Cancelled']);
+
+        return back();
+    }
+
     public function store(PlaceOrderRequest $request): RedirectResponse
     {
         $cart = $request->session()->get('cart', []);
@@ -30,7 +67,7 @@ class OrderController extends Controller
             return back()->withErrors(['cart' => 'An item in your cart is sold out. Please remove it.']);
         }
 
-        DB::transaction(function () use ($request, $cart, $menuItems) {
+        $order = DB::transaction(function () use ($request, $cart, $menuItems) {   // ← changed
             $total = $menuItems->sum(fn (MenuItem $item) => $item->price * $cart[$item->id]);
 
             $order = $request->user()->orders()->create([
@@ -46,10 +83,12 @@ class OrderController extends Controller
                     'sub_total' => $item->price * $cart[$item->id],
                 ]);
             }
+
+            return $order;   // ← changed
         });
 
         $request->session()->forget('cart');
 
-        return redirect()->route('menu.index');
+        return redirect()->route('orders.show', $order);   // ← changed
     }
 }
