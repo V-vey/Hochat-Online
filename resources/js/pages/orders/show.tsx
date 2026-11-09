@@ -18,7 +18,7 @@ export default function OrdersShow({ order, canCancel }: Props) {
 
             <div className="mx-auto max-w-2xl rounded-2xl bg-beige p-5 shadow-md">
                 <OrderCard order={order}>
-                    <p className="mt-3 text-sm">Payment: Cash on Delivery / Pickup</p>
+                    <p className="mt-3 text-sm">Payment: Cash on Delivery / Pay at Counter</p>
 
                     {canCancel && (
                         <div className="mt-5 text-center">

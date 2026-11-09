@@ -159,7 +159,7 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                         </div>
                                         <div className="flex justify-between py-2">
                                             <span>Payment:</span>
-                                            <span>Cash on Delivery / Pickup</span>
+                                            <span>Cash on Delivery / Pay at Counter</span>
                                         </div>
                                     </div>
 

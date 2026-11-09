@@ -49,7 +49,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
                         {isStaff && (
                             <Link href={dashboard()} className={navLink}>
-                                Dashboard
+                                Report
                             </Link>
                         )}
 

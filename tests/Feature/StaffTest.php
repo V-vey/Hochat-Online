@@ -8,20 +8,54 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('the staff dashboard shows order and menu counts', function () {
+test('the order status report counts today\'s orders by status', function () {
     Order::factory()->count(2)->create();
     Order::factory()->create(['status' => 'Preparing']);
+    Order::factory()->create(['status' => 'Completed', 'total_amount' => 150]);
     MenuItem::factory()->create(['is_available' => false]);
 
     $this->actingAs(User::factory()->staff()->create())
         ->get(route('admin.dashboard'))
         ->assertInertia(fn (Assert $page) => $page
             ->component('admin/dashboard')
-            ->where('orderCounts.Pending', 2)
-            ->where('orderCounts.Preparing', 1)
-            ->where('ordersToday', 3)
+            ->where('statusCounts.Pending', 2)
+            ->where('statusCounts.Preparing', 1)
+            ->where('statusCounts.Ready', 0)
+            ->where('statusCounts.Completed', 1)
+            ->where('statusCounts.Cancelled', 0)
+            ->where('totalOrders', 4)
+            ->where('completedSales', '150.00')
             ->where('soldOutCount', 1)
+            ->has('orders', 4)
         );
+});
+
+test('the order status report only includes orders in the chosen dates', function () {
+    Order::factory()->create(['created_at' => now()->subDays(10)]);
+    Order::factory()->create(['created_at' => now()->subDays(2)]);
+    Order::factory()->create();
+
+    $this->actingAs(User::factory()->staff()->create())
+        ->get(route('admin.dashboard', [
+            'from' => now()->subDays(3)->toDateString(),
+            'to' => now()->toDateString(),
+        ]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('totalOrders', 2)
+            ->has('orders', 2)
+        );
+});
+
+test('the order status report rejects an end date before the start date', function () {
+    $this->actingAs(User::factory()->staff()->create())
+        ->get(route('admin.dashboard', ['from' => '2026-11-10', 'to' => '2026-11-01']))
+        ->assertSessionHasErrors('to');
+});
+
+test('customers cannot see the order status report', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('admin.dashboard'))
+        ->assertForbidden();
 });
 
 test('staff can move an order to the next status', function () {
