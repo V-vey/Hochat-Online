@@ -56,7 +56,7 @@ test('a customer can place an order through the api', function () {
 });
 
 test('api delivery orders include the delivery fee', function () {
-    Sanctum::actingAs(User::factory()->create(['address' => 'Tarlac City']));
+    Sanctum::actingAs(User::factory()->create(['address' => 'Poblacion, Gerona, Tarlac']));
     $item = MenuItem::factory()->create(['price' => 100]);
 
     $this->postJson(route('api.v1.orders.store'), [

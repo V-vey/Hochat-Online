@@ -7,6 +7,7 @@ import {
 import { index as cartIndex } from '@/actions/App/Http/Controllers/CartController';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/MenuController';
 import { index as transactions } from '@/actions/App/Http/Controllers/OrderController';
+import { edit as profile } from '@/actions/App/Http/Controllers/ProfileController';
 import { about, contact, home } from '@/routes';
 import { dashboard } from '@/routes/admin';
 
@@ -45,6 +46,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 </Link>
                                 <Link href={transactions()} className={navLink}>
                                     Transactions
+                                </Link>
+                                <Link href={profile()} className={navLink}>
+                                    Profile
                                 </Link>
                             </>
                         )}

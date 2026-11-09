@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePoll } from '@inertiajs/react';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/MenuController';
 import { show } from '@/actions/App/Http/Controllers/OrderController';
 import type { OrderDetails } from '@/components/order-card';
@@ -8,6 +8,9 @@ import AppLayout from '@/layouts/app-layout';
 import { home } from '@/routes';
 
 export default function OrdersIndex({ orders }: { orders: OrderDetails[] }) {
+    // Show status changes from staff without reloading.
+    usePoll(10_000);
+
     return (
         <AppLayout>
             <Head title="Transactions" />

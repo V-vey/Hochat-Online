@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { destroy, update } from '@/actions/App/Http/Controllers/CartController';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/MenuController';
 import { store as placeOrder } from '@/actions/App/Http/Controllers/OrderController';
+import { edit as profile } from '@/actions/App/Http/Controllers/ProfileController';
 import PageHeader from '@/components/page-header';
 import AppLayout from '@/layouts/app-layout';
 
@@ -159,7 +160,13 @@ export default function CartIndex({ items, total, deliveryFee }: Props) {
                                         </div>
                                         {errors.order_type && (
                                             <p className="mt-1 text-sm text-red-700">
-                                                {errors.order_type}
+                                                {errors.order_type}{' '}
+                                                <Link
+                                                    href={profile()}
+                                                    className="font-display underline"
+                                                >
+                                                    Edit profile
+                                                </Link>
                                             </p>
                                         )}
                                     </div>

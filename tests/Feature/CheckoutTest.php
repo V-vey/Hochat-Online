@@ -51,8 +51,20 @@ test('checking out creates the order and empties the cart', function () {
         ->and($order->orderItems)->toHaveCount(2);
 });
 
+test('delivery is refused for an address outside Gerona', function () {
+    $user = User::factory()->create(['address' => 'San Jose, Tarlac City']);
+    $item = MenuItem::factory()->create();
+
+    $this->actingAs($user)
+        ->withSession(['cart' => [$item->id => 1]])
+        ->post(route('orders.store'), ['order_type' => 'Delivery'])
+        ->assertSessionHasErrors('order_type');
+
+    expect(Order::count())->toBe(0);
+});
+
 test('delivery orders add a 50 peso delivery fee', function () {
-    $user = User::factory()->create(['address' => 'Tarlac City']);
+    $user = User::factory()->create(['address' => 'Poblacion, Gerona, Tarlac']);
     $item = MenuItem::factory()->create(['price' => 125]);
 
     $this->actingAs($user)

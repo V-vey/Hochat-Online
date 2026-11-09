@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePoll } from '@inertiajs/react';
 import { cancel, index } from '@/actions/App/Http/Controllers/OrderController';
 import type { OrderDetails } from '@/components/order-card';
 import OrderCard from '@/components/order-card';
@@ -11,6 +11,9 @@ type Props = {
 };
 
 export default function OrdersShow({ order, canCancel }: Props) {
+    // Show status changes from staff without reloading.
+    usePoll(10_000);
+
     return (
         <AppLayout>
             <Head title={`Order #${order.id}`} />

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\MenuItemController as AdminMenuItemController;
 use App\Http\Controllers\Api\V1\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\MenuController;
 use App\Http\Controllers\Api\V1\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +15,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+        Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+        Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('/cart/{menuItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+        Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
@@ -22,5 +30,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware(['auth:sanctum', 'role:Staff,Administrator'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
         Route::patch('/orders/{order}/status', [AdminOrderController::class, 'update'])->name('orders.update');
+
+        Route::post('/menu-items', [AdminMenuItemController::class, 'store'])->name('menu-items.store');
+        Route::put('/menu-items/{menuItem}', [AdminMenuItemController::class, 'update'])->name('menu-items.update');
+    });
+
+    Route::middleware(['auth:sanctum', 'role:Administrator'])->prefix('admin')->name('admin.')->group(function () {
+        Route::delete('/menu-items/{menuItem}', [AdminMenuItemController::class, 'destroy'])->name('menu-items.destroy');
     });
 });

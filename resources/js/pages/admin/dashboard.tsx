@@ -1,4 +1,4 @@
-import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { Form, Head, Link, usePage, usePoll } from '@inertiajs/react';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/Admin/MenuItemController';
 import { index as ordersIndex } from '@/actions/App/Http/Controllers/Admin/OrderController';
 import PageHeader from '@/components/page-header';
@@ -73,6 +73,9 @@ export default function Dashboard({
     orders,
 }: Props) {
     const { errors } = usePage().props;
+
+    // Keep the report numbers up to date.
+    usePoll(30_000);
     const period = from === to ? from : `${from} to ${to}`;
 
     return (

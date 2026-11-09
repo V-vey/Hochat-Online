@@ -99,6 +99,16 @@ test('staff can move an order to the next status', function () {
     expect($order->fresh()->status)->toBe('Preparing');
 });
 
+test('staff can cancel an order that is not finished', function () {
+    $order = Order::factory()->create(['status' => 'Preparing']);
+
+    $this->actingAs(User::factory()->staff()->create())
+        ->patch(route('admin.orders.update', $order), ['status' => 'Cancelled'])
+        ->assertSessionHasNoErrors();
+
+    expect($order->fresh()->status)->toBe('Cancelled');
+});
+
 test('customers cannot change an order status', function () {
     $order = Order::factory()->create();
 

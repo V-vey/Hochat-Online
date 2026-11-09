@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, usePoll } from '@inertiajs/react';
 import {
     index,
     update,
@@ -47,6 +47,9 @@ export default function AdminOrdersIndex({
     to,
 }: Props) {
     const { errors } = usePage().props;
+
+    // Check for new orders every 10 seconds.
+    usePoll(10_000);
 
     /** Keep the date range (if any) when switching status tabs. */
     const dates = { ...(from ? { from } : {}), ...(to ? { to } : {}) };
@@ -157,17 +160,35 @@ export default function AdminOrdersIndex({
                                 </p>
 
                                 {nextStatus[order.status] && (
-                                    <Link
-                                        href={update(order.id)}
-                                        as="button"
-                                        data={{
-                                            status: nextStatus[order.status],
-                                        }}
-                                        preserveScroll
-                                        className="rounded-full border border-ink bg-brown px-4 py-2 font-display text-sm font-medium text-white hover:bg-brown-dark"
-                                    >
-                                        Mark as {nextStatus[order.status]}
-                                    </Link>
+                                    <div className="flex flex-wrap items-center justify-end gap-2">
+                                        <Link
+                                            href={update(order.id)}
+                                            as="button"
+                                            data={{ status: 'Cancelled' }}
+                                            preserveScroll
+                                            onBefore={() =>
+                                                confirm(
+                                                    `Cancel order #${order.id}?`,
+                                                )
+                                            }
+                                            className="rounded-full border border-red-600 bg-cream px-4 py-2 font-display text-sm text-red-700 hover:bg-red-50"
+                                        >
+                                            Cancel
+                                        </Link>
+                                        <Link
+                                            href={update(order.id)}
+                                            as="button"
+                                            data={{
+                                                status: nextStatus[
+                                                    order.status
+                                                ],
+                                            }}
+                                            preserveScroll
+                                            className="rounded-full border border-ink bg-brown px-4 py-2 font-display text-sm font-medium text-white hover:bg-brown-dark"
+                                        >
+                                            Mark as {nextStatus[order.status]}
+                                        </Link>
+                                    </div>
                                 )}
                             </div>
                         </div>

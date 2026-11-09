@@ -84,7 +84,7 @@ export default function Register() {
                                 id="address"
                                 name="address"
                                 type="text"
-                                placeholder="Address (needed for delivery)"
+                                placeholder="Address in Gerona (needed for delivery)"
                                 className={inputClass}
                             />
                             {errors.address && (

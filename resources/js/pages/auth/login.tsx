@@ -1,5 +1,6 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { store } from '@/actions/App/Http/Controllers/Auth/LoginController';
+import { create as forgotPassword } from '@/actions/App/Http/Controllers/Auth/PasswordResetController';
 import { create as registerPage } from '@/actions/App/Http/Controllers/Auth/RegisterController';
 import AuthLayout from '@/layouts/auth-layout';
 
@@ -7,9 +8,17 @@ const inputClass =
     'w-full rounded-lg border border-ink/70 bg-cream px-4 py-3 font-display shadow-sm placeholder:text-ink/50 focus:border-brown focus:outline-none';
 
 export default function Login() {
+    const { status } = usePage().props;
+
     return (
         <AuthLayout>
             <Head title="Login" />
+
+            {status && (
+                <p className="mx-auto mb-5 max-w-sm rounded-lg bg-green-100 px-4 py-3 text-center text-sm text-green-800">
+                    {status}
+                </p>
+            )}
 
             <Form
                 {...store.form()}
@@ -57,15 +66,23 @@ export default function Login() {
                             )}
                         </div>
 
-                        <label className="flex items-center justify-center gap-2 font-display text-sm">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                value="1"
-                                className="accent-brown"
-                            />{' '}
-                            Remember me
-                        </label>
+                        <div className="flex items-center justify-between font-display text-sm">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    name="remember"
+                                    value="1"
+                                    className="accent-brown"
+                                />{' '}
+                                Remember me
+                            </label>
+                            <Link
+                                href={forgotPassword()}
+                                className="underline hover:text-brown"
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
 
                         <div className="text-center">
                             <button

@@ -15,7 +15,7 @@ class UpdateOrderStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', Rule::in(['Preparing', 'Ready', 'Completed'])],
+            'status' => ['required', Rule::in(['Preparing', 'Ready', 'Completed', 'Cancelled'])],
         ];
     }
 }
