@@ -1,0 +1,1612 @@
+{
+    "info": {
+        "name": "Hochat Online API",
+        "description": "REST API for Hochat Online (Laravel 13 + Sanctum).\n\n1. Start Laragon (MySQL) and `composer run dev`.\n2. Run the three **Login** requests first. They save the tokens into collection variables automatically.\n3. Every request sends `Accept: application/json`.\n\nSample accounts (password `password`): admin@hochat.test, staff@hochat.test, user@hochat.test.\n\nStatus codes: 200 OK, 201 Created, 204 No Content, 401 not logged in, 403 not allowed, 404 not found, 422 validation error.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1"
+        },
+        {
+            "key": "customer_token",
+            "value": ""
+        },
+        {
+            "key": "staff_token",
+            "value": ""
+        },
+        {
+            "key": "admin_token",
+            "value": ""
+        },
+        {
+            "key": "menu_item_id",
+            "value": "1"
+        },
+        {
+            "key": "category_id",
+            "value": "1"
+        },
+        {
+            "key": "order_id",
+            "value": ""
+        },
+        {
+            "key": "new_menu_item_id",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Auth",
+            "item": [
+                {
+                    "name": "Login as Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["login"]
+                        },
+                        "description": "Returns a token. Saved as {{customer_token}}.",
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@hochat.test\",\n  \"password\": \"password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"customer_token\", body.token);",
+                                    "pm.test(\"Token returned\", () => pm.expect(body.token).to.be.a(\"string\"));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login as Staff",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["login"]
+                        },
+                        "description": "Saved as {{staff_token}}.",
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"staff@hochat.test\",\n  \"password\": \"password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"staff_token\", body.token);",
+                                    "pm.test(\"Token returned\", () => pm.expect(body.token).to.be.a(\"string\"));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login as Admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["login"]
+                        },
+                        "description": "Saved as {{admin_token}}.",
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"admin@hochat.test\",\n  \"password\": \"password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"admin_token\", body.token);",
+                                    "pm.test(\"Token returned\", () => pm.expect(body.token).to.be.a(\"string\"));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "2. Menu (public)",
+            "item": [
+                {
+                    "name": "List menu",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/menu",
+                            "host": ["{{base_url}}"],
+                            "path": ["menu"]
+                        },
+                        "description": "All menu items with category, price and availability. No token needed.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Search menu",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/menu?search=rice",
+                            "host": ["{{base_url}}"],
+                            "path": ["menu"],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "rice"
+                                }
+                            ]
+                        },
+                        "description": "Filter by name.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "3. Cart (Customer)",
+            "item": [
+                {
+                    "name": "View cart",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart"]
+                        },
+                        "description": "Items, item_count, subtotal.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Add to cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart"]
+                        },
+                        "description": "Adds an item. quantity is optional (default 1, max 50).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"menu_item_id\": \"{{menu_item_id}}\",\n  \"quantity\": 2\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Change quantity",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart/{{menu_item_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart", "{{menu_item_id}}"]
+                        },
+                        "description": "Set the quantity of an item already in the cart.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 3\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove from cart",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart/{{menu_item_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart", "{{menu_item_id}}"]
+                        },
+                        "description": "Removes the item.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Add to cart again (for checkout)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart"]
+                        },
+                        "description": "Puts an item back so checkout has something to order.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"menu_item_id\": \"{{menu_item_id}}\",\n  \"quantity\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Checkout cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cart/checkout",
+                            "host": ["{{base_url}}"],
+                            "path": ["cart", "checkout"]
+                        },
+                        "description": "Places an order from the cart and empties it. order_type: Dine-In or Delivery (Delivery adds ₱50 and needs a Gerona address). scheduled_time is optional (future date). Saves {{order_id}}.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"order_type\": \"Dine-In\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"order_id\", body.data.id);",
+                                    "pm.test(\"New order is Pending\", () => pm.expect(body.data.status).to.eql(\"Pending\"));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "4. Orders (Customer)",
+            "item": [
+                {
+                    "name": "Place order directly",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "Alternative to the cart: send the items in the body. Saves {{order_id}}.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"order_type\": \"Dine-In\",\n  \"items\": [\n    {\n      \"menu_item_id\": \"{{menu_item_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"order_id\", body.data.id);",
+                                    "pm.test(\"New order is Pending\", () => pm.expect(body.data.status).to.eql(\"Pending\"));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "My orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "The customer's own orders, newest first.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "One order",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders/{{order_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders", "{{order_id}}"]
+                        },
+                        "description": "Order with its items. 403 if it belongs to someone else.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Cancel order",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders/{{order_id}}/cancel",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders", "{{order_id}}", "cancel"]
+                        },
+                        "description": "Works only within 1 minute and while Pending; otherwise 403.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "5. Staff – Orders",
+            "item": [
+                {
+                    "name": "All orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["admin", "orders"]
+                        },
+                        "description": "Every order with customer and items.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Orders by status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders?status=Pending",
+                            "host": ["{{base_url}}"],
+                            "path": ["admin", "orders"],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "Pending"
+                                }
+                            ]
+                        },
+                        "description": "Filter by status.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Place order to update (Customer)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "Creates a fresh Pending order so the status requests below have something to change.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"order_type\": \"Dine-In\",\n  \"items\": [\n    {\n      \"menu_item_id\": \"{{menu_item_id}}\",\n      \"quantity\": 1\n    }\n  ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                                    "const body = pm.response.json();",
+                                    "pm.collectionVariables.set(\"order_id\", body.data.id);",
+                                    "pm.test(\"New order is Pending\", () => pm.expect(body.data.status).to.eql(\"Pending\"));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update status → Preparing",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders/{{order_id}}/status",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "orders",
+                                "{{order_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Allowed: Preparing, Ready, Completed, Cancelled. Finished orders cannot change (422).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"Preparing\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update status → Ready",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders/{{order_id}}/status",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "orders",
+                                "{{order_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"Ready\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update status → Completed",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders/{{order_id}}/status",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "orders",
+                                "{{order_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"Completed\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "6. Staff/Admin – Menu items",
+            "item": [
+                {
+                    "name": "Create menu item (Staff)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/menu-items",
+                            "host": ["{{base_url}}"],
+                            "path": ["admin", "menu-items"]
+                        },
+                        "description": "is_available and photo_url are optional. Saves {{new_menu_item_id}}.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Halo-Halo\",\n  \"price\": 85\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                                    "pm.collectionVariables.set(\"new_menu_item_id\", pm.response.json().data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update menu item (Staff)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/menu-items/{{new_menu_item_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "menu-items",
+                                "{{new_menu_item_id}}"
+                            ]
+                        },
+                        "description": "Send all fields. is_available false = sold out.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Halo-Halo Special\",\n  \"price\": 95,\n  \"is_available\": false\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete menu item (Staff → 403)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/menu-items/{{new_menu_item_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "menu-items",
+                                "{{new_menu_item_id}}"
+                            ]
+                        },
+                        "description": "Staff are not allowed to delete.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{staff_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete menu item (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/menu-items/{{new_menu_item_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": [
+                                "admin",
+                                "menu-items",
+                                "{{new_menu_item_id}}"
+                            ]
+                        },
+                        "description": "Only the Administrator can delete. Items in past orders return 422.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "7. Error examples",
+            "item": [
+                {
+                    "name": "401 – no token",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "Protected route without a token.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "403 – customer uses staff route",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["admin", "orders"]
+                        },
+                        "description": "Wrong role.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "422 – invalid order type",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "Pickup is not offered.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"order_type\": \"Pickup\",\n  \"items\": []\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 422\", () => pm.response.to.have.status(422));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "422 – wrong password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["login"]
+                        },
+                        "description": "Login fails with a validation error.",
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@hochat.test\",\n  \"password\": \"wrong-password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 422\", () => pm.response.to.have.status(422));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "404 – order not found",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders/999999",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders", "999999"]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "8. Logout (run last)",
+            "item": [
+                {
+                    "name": "Logout (Customer)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["logout"]
+                        },
+                        "description": "Deletes the customer's current token. After this, protected requests return 401 until you log in again.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Old token no longer works",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders"]
+                        },
+                        "description": "Same token as before logout → 401.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{customer_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

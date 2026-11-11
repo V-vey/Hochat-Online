@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\MenuItem;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -33,26 +31,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'Staff',
         ]);
 
-        // Customer (role defaults to 'User')
+        // Customer (role defaults to 'User'), with a Gerona address so Delivery works in the demo
         User::factory()->create([
             'name' => 'Customer',
             'email' => 'user@hochat.test',
+            'address' => 'Poblacion 1, Gerona, Tarlac',
         ]);
 
-        $riceMeals = Category::create(['name' => 'Rice Meals']);
-        MenuItem::factory()->count(5)->create(['category_id' => $riceMeals->id]);
-
-        $wings = Category::create(['name' => 'Wings']);
-        MenuItem::factory()->count(5)->create(['category_id' => $wings->id]);
-
-        $pasta = Category::create(['name' => 'Pasta']);
-        MenuItem::factory()->count(5)->create(['category_id' => $pasta->id]);
-
-        $drinks = Category::create(['name' => 'Drinks']);
-        MenuItem::factory()->count(5)->create(['category_id' => $drinks->id]);
-
-        $desserts = Category::create(['name' => 'Desserts']);
-        MenuItem::factory()->count(5)->create(['category_id' => $desserts->id]);
-
+        $this->call(MenuSeeder::class);
     }
 }

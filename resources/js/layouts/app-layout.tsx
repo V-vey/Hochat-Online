@@ -90,7 +90,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <footer className="bg-beige py-8">
                 <div className="flex justify-center gap-3">
                     <a
-                        href="https://www.facebook.com"
+                        href="https://www.facebook.com/HochatCafe"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Facebook"

@@ -12,12 +12,16 @@ export default function About() {
 
             <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
                 <div className="space-y-4">
-                    <div className="flex h-44 items-center justify-center rounded-2xl bg-beige font-display text-gold">
-                        Café interior photo
-                    </div>
-                    <div className="flex h-72 items-center justify-center rounded-2xl bg-beige font-display text-gold">
-                        Café storefront photo
-                    </div>
+                    <img
+                        src="/images/about-interior.jpg"
+                        alt="Inside Hochat Cafe: colorful tables and chairs"
+                        className="aspect-[416/228] w-full rounded-2xl object-cover shadow-sm"
+                    />
+                    <img
+                        src="/images/about-storefront.jpg"
+                        alt="The yellow Hochat Cafe storefront"
+                        className="aspect-[416/564] w-full rounded-2xl object-cover shadow-sm"
+                    />
                 </div>
 
                 <div className="space-y-4 text-justify leading-relaxed">

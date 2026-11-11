@@ -2,14 +2,38 @@ import { Head } from '@inertiajs/react';
 import PageHeader from '@/components/page-header';
 import AppLayout from '@/layouts/app-layout';
 
+const FACEBOOK_URL = 'https://www.facebook.com/HochatCafe';
+
 /**
- * Replace these with the café's real details.
+ * Contact details from the café's Facebook page (facebook.com/HochatCafe).
  */
 const details = [
-    { label: 'Address', value: 'Add the café address here' },
-    { label: 'Phone', value: 'Add the café phone number here' },
-    { label: 'Email', value: 'Add the café email here' },
-    { label: 'Opening hours', value: 'Add the opening hours here' },
+    {
+        label: 'Address',
+        value: 'Poblacion 3, Gerona, Tarlac 2302',
+        href: 'https://www.google.com/maps/search/?api=1&query=Hochat+Cafe+Poblacion+3+Gerona+Tarlac',
+    },
+    { label: 'Mobile', value: '0995 829 8402', href: 'tel:+639958298402' },
+    {
+        label: 'Email',
+        value: 'hochatcafe@gmail.com',
+        href: 'mailto:hochatcafe@gmail.com',
+    },
+    {
+        label: 'Facebook',
+        value: 'facebook.com/HochatCafe',
+        href: FACEBOOK_URL,
+    },
+    {
+        label: 'Services',
+        value: 'Dine-in · Delivery within Gerona',
+        href: null,
+    },
+    {
+        label: 'Opening hours',
+        value: 'See our Facebook page for today’s hours',
+        href: FACEBOOK_URL,
+    },
 ];
 
 export default function Contact() {
@@ -24,7 +48,7 @@ export default function Contact() {
                 </h2>
 
                 <dl className="space-y-3">
-                    {details.map(({ label, value }) => (
+                    {details.map(({ label, value, href }) => (
                         <div
                             key={label}
                             className="rounded-xl bg-cream p-4 shadow-sm"
@@ -32,14 +56,31 @@ export default function Contact() {
                             <dt className="font-display text-sm text-gold">
                                 {label}
                             </dt>
-                            <dd>{value}</dd>
+                            <dd>
+                                {href ? (
+                                    <a
+                                        href={href}
+                                        target={
+                                            href.startsWith('http')
+                                                ? '_blank'
+                                                : undefined
+                                        }
+                                        rel="noreferrer"
+                                        className="underline decoration-line underline-offset-2 hover:text-brown"
+                                    >
+                                        {value}
+                                    </a>
+                                ) : (
+                                    value
+                                )}
+                            </dd>
                         </div>
                     ))}
                 </dl>
 
                 <p className="mt-6 text-center text-sm">
-                    You can also message us on Facebook or Instagram using the
-                    links below.
+                    For questions about your order, message us on Facebook or
+                    call the number above.
                 </p>
             </div>
         </AppLayout>
