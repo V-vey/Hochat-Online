@@ -104,7 +104,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         </svg>
                     </a>
                     <a
-                        href="https://www.instagram.com"
+                        href="https://www.instagram.com/hochatcafe/"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Instagram"

@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 const FACEBOOK_URL = 'https://www.facebook.com/HochatCafe';
 
 /**
- * Contact details from the café's Facebook page (facebook.com/HochatCafe).
+ * Contact details from the café's Facebook and Instagram pages.
  */
 const details = [
     {
@@ -23,6 +23,11 @@ const details = [
         label: 'Facebook',
         value: 'facebook.com/HochatCafe',
         href: FACEBOOK_URL,
+    },
+    {
+        label: 'Instagram',
+        value: '@hochatcafe',
+        href: 'https://www.instagram.com/hochatcafe/',
     },
     {
         label: 'Services',
