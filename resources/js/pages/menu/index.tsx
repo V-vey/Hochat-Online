@@ -109,10 +109,10 @@ export default function MenuIndex({ categories, search }: Props) {
                                         <img
                                             src={item.photo_url}
                                             alt={item.name}
-                                            className="aspect-square w-full rounded-2xl object-cover"
+                                            className="aspect-[4/3] w-full rounded-2xl object-cover"
                                         />
                                     ) : (
-                                        <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-beige font-display text-sm text-gold">
+                                        <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl bg-beige font-display text-sm text-gold">
                                             No photo
                                         </div>
                                     )}
