@@ -37,7 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});
 
+Route::middleware(['auth', 'role:User'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/{menuItem}', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');

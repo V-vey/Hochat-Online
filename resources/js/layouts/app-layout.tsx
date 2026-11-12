@@ -16,6 +16,7 @@ const navLink =
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const { auth, cartCount } = usePage().props;
+    const isCustomer = auth.user?.role === 'User';
     const isStaff =
         auth.user?.role === 'Staff' || auth.user?.role === 'Administrator';
 
@@ -39,7 +40,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             Menu
                         </Link>
 
-                        {auth.user && (
+                        {isCustomer && (
                             <>
                                 <Link href={cartIndex()} className={navLink}>
                                     Cart ({cartCount})
@@ -47,10 +48,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 <Link href={transactions()} className={navLink}>
                                     Transactions
                                 </Link>
-                                <Link href={profile()} className={navLink}>
-                                    Profile
-                                </Link>
                             </>
+                        )}
+
+                        {auth.user && (
+                            <Link href={profile()} className={navLink}>
+                                Profile
+                            </Link>
                         )}
 
                         <Link href={about()} className={navLink}>

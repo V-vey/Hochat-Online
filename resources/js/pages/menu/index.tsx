@@ -1,4 +1,4 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { store as addToCart } from '@/actions/App/Http/Controllers/CartController';
 import { index } from '@/actions/App/Http/Controllers/MenuController';
@@ -27,6 +27,8 @@ type Props = {
 
 export default function MenuIndex({ categories, search }: Props) {
     const [selected, setSelected] = useState<number | 'all'>('all');
+    const { auth } = usePage().props;
+    const isCustomer = auth.user?.role === 'User';
 
     const nonEmpty = categories.filter(
         (category) => category.menu_items.length > 0,
@@ -125,19 +127,21 @@ export default function MenuIndex({ categories, search }: Props) {
                                     <p>₱ {item.price}</p>
                                 </div>
 
-                                {item.is_available ? (
-                                    <Link
-                                        href={addToCart(item.id)}
-                                        as="button"
-                                        preserveScroll
-                                        className="mt-2 btn-pill-light px-4 py-1 text-sm"
-                                    >
-                                        + Add to cart
-                                    </Link>
-                                ) : (
+                                {!item.is_available ? (
                                     <span className="mt-2 font-display text-sm text-gray-500">
                                         Sold out
                                     </span>
+                                ) : (
+                                    isCustomer && (
+                                        <Link
+                                            href={addToCart(item.id)}
+                                            as="button"
+                                            preserveScroll
+                                            className="mt-2 btn-pill-light px-4 py-1 text-sm"
+                                        >
+                                            + Add to cart
+                                        </Link>
+                                    )
                                 )}
                             </div>
                         ))}

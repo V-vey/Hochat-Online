@@ -14,7 +14,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    });
 
+    Route::middleware(['auth:sanctum', 'role:User'])->group(function () {
         Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
         Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
         Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');
