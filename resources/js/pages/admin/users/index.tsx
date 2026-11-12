@@ -8,7 +8,7 @@ type User = {
     email: string;
     phone: string;
     address: string | null;
-    role: string;
+    role: string | null;
     created_at: string;
     orders_count: number;
 };
@@ -68,9 +68,9 @@ export default function AdminUsersIndex({ users }: { users: User[] }) {
                                 </td>
                                 <td className="px-4 py-2">
                                     <span
-                                        className={`rounded-full px-3 py-1 text-xs font-semibold ${roleBadge[user.role] ?? ''}`}
+                                        className={`rounded-full px-3 py-1 text-xs font-semibold ${user.role ? roleBadge[user.role] : 'bg-red-100 text-red-700'}`}
                                     >
-                                        {user.role}
+                                        {user.role ?? 'No role'}
                                     </span>
                                 </td>
                                 <td className="px-4 py-2">

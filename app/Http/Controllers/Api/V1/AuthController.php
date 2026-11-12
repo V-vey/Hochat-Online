@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -25,6 +26,12 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => 'These credentials do not match our records.',
             ]);
+        }
+
+        if ($user->role === null) {
+            Log::warning("User {$user->id} tried to log in to the API, but their role no longer exists.");
+
+            return response()->json(['message' => User::INACTIVE_ROLE_MESSAGE], 403);
         }
 
         return response()->json([
