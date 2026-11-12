@@ -58,4 +58,14 @@ class OrderController extends Controller
 
         return back();
     }
+
+    /**
+     * Permanently remove an order and its items (Administrator only).
+     */
+    public function destroy(Order $order): RedirectResponse
+    {
+        $order->delete();
+
+        return back();
+    }
 }

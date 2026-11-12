@@ -1,6 +1,7 @@
 import { Form, Head, Link, usePage, usePoll } from '@inertiajs/react';
 import { index as menuIndex } from '@/actions/App/Http/Controllers/Admin/MenuItemController';
 import { index as ordersIndex } from '@/actions/App/Http/Controllers/Admin/OrderController';
+import { index as usersIndex } from '@/actions/App/Http/Controllers/Admin/UserController';
 import PageHeader from '@/components/page-header';
 import StatusBadge from '@/components/status-badge';
 import AppLayout from '@/layouts/app-layout';
@@ -72,7 +73,7 @@ export default function Dashboard({
     soldOutCount,
     orders,
 }: Props) {
-    const { errors } = usePage().props;
+    const { auth, errors } = usePage().props;
 
     // Keep the report numbers up to date.
     usePoll(30_000);
@@ -263,6 +264,11 @@ export default function Dashboard({
                 <Link href={menuIndex()} className="btn-pill-light">
                     Manage Menu
                 </Link>
+                {auth.user.role === 'Administrator' && (
+                    <Link href={usersIndex()} className="btn-pill-light">
+                        Manage Users
+                    </Link>
+                )}
             </div>
         </AppLayout>
     );

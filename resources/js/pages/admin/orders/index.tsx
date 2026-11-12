@@ -1,5 +1,6 @@
 import { Head, Link, usePage, usePoll } from '@inertiajs/react';
 import {
+    destroy,
     index,
     update,
 } from '@/actions/App/Http/Controllers/Admin/OrderController';
@@ -46,7 +47,8 @@ export default function AdminOrdersIndex({
     from,
     to,
 }: Props) {
-    const { errors } = usePage().props;
+    const { auth, errors } = usePage().props;
+    const isAdmin = auth.user.role === 'Administrator';
 
     // Check for new orders every 10 seconds.
     usePoll(10_000);
@@ -118,7 +120,24 @@ export default function AdminOrdersIndex({
                                 <h2 className="text-lg font-semibold">
                                     Order #{order.id}
                                 </h2>
-                                <StatusBadge status={order.status} />
+                                <div className="flex items-center gap-3">
+                                    <StatusBadge status={order.status} />
+                                    {isAdmin && (
+                                        <Link
+                                            href={destroy(order.id)}
+                                            as="button"
+                                            preserveScroll
+                                            onBefore={() =>
+                                                confirm(
+                                                    `Permanently delete order #${order.id}? This cannot be undone.`,
+                                                )
+                                            }
+                                            className="text-sm font-medium text-red-600 hover:underline"
+                                        >
+                                            Delete
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="mb-3 text-sm text-gray-600">
