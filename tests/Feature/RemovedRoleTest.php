@@ -35,7 +35,9 @@ test('a user whose role was removed cannot log in to the website', function () {
     $this->post(route('login.store'), [
         'email' => $user->email,
         'password' => 'password',
-    ])->assertSessionHasErrors(['email' => User::INACTIVE_ROLE_MESSAGE]);
+    ])
+        ->assertForbidden()
+        ->assertSee(User::INACTIVE_ROLE_MESSAGE);
 
     $this->assertGuest();
 });

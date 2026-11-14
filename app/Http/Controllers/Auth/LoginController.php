@@ -44,9 +44,7 @@ class LoginController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return back()->withErrors([
-                'email' => User::INACTIVE_ROLE_MESSAGE,
-            ])->onlyInput('email');
+            abort(403, User::INACTIVE_ROLE_MESSAGE);
         }
 
         $request->session()->regenerate();

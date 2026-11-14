@@ -70,9 +70,16 @@ Hochat Online lets customers of Hochat Café browse the menu, add food to a cart
 
 ### 1. Install
 
+From the submitted ZIP, unzip it and open a terminal in the `hochat-online` folder. From GitHub, clone it first:
+
 ```bash
 git clone https://github.com/V-vey/Hochat-Online.git
 cd Hochat-Online
+```
+
+Then install the packages and create the settings file:
+
+```bash
 composer install
 npm install
 cp .env.example .env
@@ -81,7 +88,7 @@ php artisan key:generate
 
 ### 2. Set up the database
 
-Create a MySQL database called `hochat_online` (in Laragon: **Database → Create**), then set these lines in `.env`:
+Create a MySQL database called `hochat_online` (in Laragon: **Database → Create**). The `.env` copied from `.env.example` already has these settings for Laragon's default MySQL (user `root`, no password). Change them only if your MySQL is set up differently:
 
 ```env
 DB_CONNECTION=mysql
@@ -93,10 +100,23 @@ DB_PASSWORD=
 APP_URL=http://localhost:8000
 ```
 
-Then create the tables, add the sample data and link the photo storage:
+Then load the tables and sample data, using **either** option:
+
+- **Option A: import the included SQL file.** In Laragon open **Database** (HeidiSQL or phpMyAdmin), select `hochat_online`, and import `database/hochat_online.sql`. Or from a terminal:
+
+  ```bash
+  mysql -u root hochat_online < database/hochat_online.sql
+  ```
+
+- **Option B: build it with Laravel.**
+
+  ```bash
+  php artisan migrate --seed
+  ```
+
+Both give the same tables, the 85-item menu and the sample accounts below. Finally, link the photo storage:
 
 ```bash
-php artisan migrate --seed
 php artisan storage:link
 ```
 
@@ -109,6 +129,13 @@ composer run dev
 ```
 
 This starts both Laravel and Vite. Open **http://localhost:8000**.
+
+To run it without Vite (for example, just to test the system), build the frontend once and start only Laravel:
+
+```bash
+npm run build
+php artisan serve
+```
 
 ### Sample accounts
 

@@ -1,0 +1,55 @@
+HOCHAT ONLINE - SETUP INSTRUCTIONS (run locally)
+================================================
+
+REQUIREMENTS
+- PHP 8.4.1 or newer, with Composer
+  (Laragon's bundled PHP 8.3 is too old; add PHP 8.4+ to Laragon or use PHP 8.4+ on the PATH)
+- Node.js 22 or newer, with npm (only needed to rebuild the frontend; it is already built)
+- MySQL (Laragon recommended)
+
+
+1. INSTALL
+   Unzip the folder, open a terminal inside "hochat-online", then run:
+
+     composer install
+     copy .env.example .env          (Mac/Linux: cp .env.example .env)
+     php artisan key:generate
+
+
+2. DATABASE
+   a) Start MySQL in Laragon.
+   b) Create an empty database named:  hochat_online
+      (Laragon: Database -> right-click -> Create new -> Database)
+   c) Import the included file:  database/hochat_online.sql
+      (HeidiSQL or phpMyAdmin: select hochat_online -> Import / Run SQL file)
+      or from a terminal:
+
+        mysql -u root hochat_online < database/hochat_online.sql
+
+   .env is already set for Laragon's default MySQL (user root, no password,
+   database hochat_online). Edit the DB_ lines in .env only if yours differ.
+
+   (Alternative to importing: php artisan migrate --seed)
+
+
+3. PHOTO STORAGE
+     php artisan storage:link
+
+
+4. RUN
+     php artisan serve
+
+   Open:  http://localhost:8000
+
+
+SAMPLE ACCOUNTS  (password for all: password)
+   Administrator   admin@hochat.test
+   Staff           staff@hochat.test
+   Customer        user@hochat.test
+
+
+OPTIONAL
+- Run the automated tests:      php artisan test
+- Edit the frontend live:       npm install, then  npm run dev  (keep it running next to php artisan serve)
+- Test the REST API in Postman: import Hochat-Online.postman_collection.json
+- Password-reset emails are written to storage/logs/laravel.log (MAIL_MAILER=log).
